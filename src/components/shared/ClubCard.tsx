@@ -1,12 +1,10 @@
 import {
     Card,
     CardContent,
-    CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
 import { Users } from "lucide-react"
-import { Badge } from "../ui/badge"
 
 type Props = {
     club: {
@@ -14,7 +12,6 @@ type Props = {
         name: string,
         image: string,
         members: string[],
-        genre: string
     }
 }
 
@@ -34,14 +31,9 @@ export default function ClubCard({ club }: Props) {
                 <CardTitle className="text-sm truncate">{club.name}</CardTitle>
                 <div className="flex items-center space-x-1 text-xs text-gray-500">
                     <Users className="h-3 w-3" />
-                    <span>{club.members}</span>
+                    <span>{club.members.length}</span>
                 </div>
             </CardContent>
-            <CardFooter className="p-4 pt-0">
-                <Badge variant="secondary" className="w-full justify-center">
-                    {club.genre}
-                </Badge>
-            </CardFooter>
         </Card>
     )
 }
