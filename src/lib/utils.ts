@@ -12,10 +12,16 @@ export function apiRoute(path: string) {
 
 
 export function extractAccessToken(cookieStore: ReadonlyRequestCookies) {
-    return `Bearer ${cookieStore.get("accessToken")}`
+    if (!cookieStore.has("accessToken")) {
+        throw new Error("cookieStore does not have 'accessToken'")
+    }
+    return `Bearer ${cookieStore.get("accessToken")?.value}`
 }
 
 export function getUserId(cookieStore: ReadonlyRequestCookies) {
-    return cookieStore.get("userId")
+    if (!cookieStore.has("userId")) {
+        throw new Error("cookieStore does not have 'userId'")
+    }
+    return cookieStore.get("userId")?.value
 }
 

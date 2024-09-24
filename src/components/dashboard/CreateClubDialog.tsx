@@ -65,7 +65,10 @@ export default function CreateClubDialog() {
                 </div>
                 <DialogFooter>
                     <Button
-                        onClick={() => createClub(name, description)}
+                        onClick={async () => {
+                            await createClub(name, description)
+                            setIsCreateClubOpen(false)
+                        }}
                         type="submit"
                     >
                         Create Club

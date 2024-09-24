@@ -93,7 +93,7 @@ export default async function Dashboard() {
                 </div>
                 <GridLayout>
                     {clubs.map((club) => (
-                        <ClubCard club={club} />
+                        <ClubCard key={club.id} club={club} />
                     ))}
                 </GridLayout>
             </main>

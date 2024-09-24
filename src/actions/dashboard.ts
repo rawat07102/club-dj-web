@@ -1,6 +1,7 @@
 "use server"
 import { User, Club } from "@/lib/types"
 import { apiRoute, extractAccessToken, getUserId } from "@/lib/utils"
+import { revalidateTag } from "next/cache"
 import { cookies } from "next/headers"
 
 export async function createClub(name: string, description: string) {
@@ -19,10 +20,7 @@ export async function createClub(name: string, description: string) {
     if (!res.ok) {
         throw new Error(res.statusText)
     }
-
-    const jsonRes = await res.json()
-    console.log(jsonRes)
-    return jsonRes
+    revalidateTag("clubs")
 }
 
 export async function uploadClubThumbnail(
@@ -41,17 +39,18 @@ export async function uploadClubThumbnail(
 
 export async function getUser(id?: string): Promise<User> {
     const userId = id || getUserId(cookies())
-    console.log(getUserId(cookies()), "cookies")
     const res = await fetch(apiRoute(`/users/${userId}`))
 
     const user = await res.json()
-    console.log(user)
     return user
 }
 
 export async function getClubs(): Promise<Club[]> {
-    const res = await fetch(apiRoute("/clubs"))
-    const club = await res.json()
-    console.log(club)
-    return club
+    const res = await fetch(apiRoute("/clubs"), {
+        next: {
+            tags: ["clubs"]
+        },
+    })
+    const clubs = await res.json()
+    return clubs
 }
