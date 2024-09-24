@@ -1,8 +1,8 @@
+import { login } from "@/actions/auth"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
-import { login } from "./login-actions"
 
 export default function LoginPage() {
     return (

@@ -6,7 +6,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { Music, Play, Users, Heart } from "lucide-react"
+import { Music, Play, Heart } from "lucide-react"
 
 type Props = {
     playlist: {

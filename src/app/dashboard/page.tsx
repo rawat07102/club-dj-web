@@ -1,10 +1,8 @@
-"use client"
 import React from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Bell, Search, Plus, LogOut, ChevronDown } from "lucide-react"
+import { Bell, Search, ChevronDown } from "lucide-react"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -14,16 +12,6 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import {
     Tooltip,
     TooltipContent,
     TooltipProvider,
@@ -31,9 +19,12 @@ import {
 } from "@/components/ui/tooltip"
 import ClubCard from "@/components/shared/ClubCard"
 import GridLayout from "@/components/shared/GridLayout"
+import { LogoutButton } from "@/components/dashboard/LogoutButton"
+import CreateClubDialog from "@/components/dashboard/CreateClubDialog"
+import { getClubs } from "@/actions/dashboard"
 
-export default function Dashboard() {
-    const [isCreateClubOpen, setIsCreateClubOpen] = React.useState(false)
+export default async function Dashboard() {
+    const clubs = await getClubs()
     return (
         <div className="flex-1 flex flex-col overflow-hidden">
             {/* Top Bar */}
@@ -87,10 +78,7 @@ export default function Dashboard() {
                                 <DropdownMenuItem>Profile</DropdownMenuItem>
                                 <DropdownMenuItem>Settings</DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem>
-                                    <LogOut className="h-4 w-4 mr-2" />
-                                    <span>Log out</span>
-                                </DropdownMenuItem>
+                                <LogoutButton />
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
@@ -101,89 +89,13 @@ export default function Dashboard() {
             <main className="flex-1 overflow-y-auto p-4">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-2xl font-bold">Discover Clubs</h2>
-                    <Dialog
-                        open={isCreateClubOpen}
-                        onOpenChange={setIsCreateClubOpen}
-                    >
-                        <DialogTrigger asChild>
-                            <Button>
-                                <Plus className="h-4 w-4 mr-2" />
-                                Create Club
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Create a New Club</DialogTitle>
-                                <DialogDescription>
-                                    Fill in the details to create your new music
-                                    club.
-                                </DialogDescription>
-                            </DialogHeader>
-                            <div className="grid gap-4 py-4">
-                                <div className="grid grid-cols-4 items-center gap-4">
-                                    <Label
-                                        htmlFor="club-name"
-                                        className="text-right"
-                                    >
-                                        Name
-                                    </Label>
-                                    <Input
-                                        id="club-name"
-                                        className="col-span-3"
-                                    />
-                                </div>
-                                <div className="grid grid-cols-4 items-center gap-4">
-                                    <Label
-                                        htmlFor="club-description"
-                                        className="text-right"
-                                    >
-                                        Description
-                                    </Label>
-                                    <Input
-                                        id="club-description"
-                                        className="col-span-3"
-                                    />
-                                </div>
-                            </div>
-                            <DialogFooter>
-                                <Button type="submit">Create Club</Button>
-                            </DialogFooter>
-                        </DialogContent>
-                    </Dialog>
+                    <CreateClubDialog />
                 </div>
-                    {/*[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="bg-white rounded-lg border shadow-sm p-6 space-y-4">
-                <div className="flex items-center space-x-4">
-                  <Avatar className="h-12 w-12">
-                    <AvatarImage src={`https://picsum.photos/seed/club${i}/200/200`} />
-                    <AvatarFallback>C{i}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <h3 className="text-xl font-semibold">Club {i}</h3>
-                    <p className="text-sm text-gray-500">1.2k members</p>
-                  </div>
-                </div>
-                <p className="text-sm">Join us for the best electronic music experience!</p>
-                <div className="flex space-x-2">
-                  <Badge variant="secondary">Electronic</Badge>
-                  <Badge variant="secondary">Dance</Badge>
-                </div>
-                <Button className="w-full">Join Club</Button>
-              </div>
-            ))*/}
-                    <GridLayout>
-                        {[1, 2, 3, 4, 5, 6].map((i) => (
-                            <ClubCard
-                                club={{
-                                    id: 1,
-                                    name: "Club Name",
-                                    genre: "Electronic",
-                                    image: `https://picsum.photos/seed/club${i}/200/200`,
-                                    members: [],
-                                }}
-                            />
-                        ))}
-                    </GridLayout>
+                <GridLayout>
+                    {clubs.map((club) => (
+                        <ClubCard club={club} />
+                    ))}
+                </GridLayout>
             </main>
         </div>
     )

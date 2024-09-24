@@ -1,38 +1,39 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
+import { NextRequest, NextResponse } from "next/server"
+import { cookies } from "next/headers"
 
 // 1. Specify protected and public routes
-const protectedRoutes = ['/dashboard']
-const publicRoutes = ['/auth/login', '/auth/signup', '/']
+const protectedRoutes = ["/dashboard"]
+const publicRoutes = ["/auth/login", "/auth/signup", "/"]
 
 export default async function middleware(req: NextRequest) {
-  // 2. Check if the current route is protected or public
-  const path = req.nextUrl.pathname
-  const isProtectedRoute = protectedRoutes.includes(path)
-  const isPublicRoute = publicRoutes.includes(path)
+    // 2. Check if the current route is protected or public
+    const path = req.nextUrl.pathname
+    const isProtectedRoute = protectedRoutes.includes(path)
+    const isPublicRoute = publicRoutes.includes(path)
 
-  // 3. Decrypt the session from the cookie
-  const accessToken = cookies().get('accessToken')?.value
+    // 3. Decrypt the session from the cookie
+    const cookieStore = cookies()
 
-  // 5. Redirect to /login if the user is not authenticated
-  if (isProtectedRoute && !accessToken) {
-    return NextResponse.redirect(new URL('/auth/login', req.nextUrl))
-  }
+    const isAuthenticated = cookieStore.has("accessToken") && cookieStore.has("userId")
 
-  // 6. Redirect to /dashboard if the user is authenticated
-  if (
-    isPublicRoute &&
-    accessToken &&
-    !req.nextUrl.pathname.startsWith('/dashboard')
-  ) {
-    return NextResponse.redirect(new URL('/dashboard', req.nextUrl))
-  }
+    // 5. Redirect to /login if the user is not authenticated
+    if (isProtectedRoute && !isAuthenticated) {
+        return NextResponse.redirect(new URL("/auth/login", req.nextUrl))
+    }
 
-  return NextResponse.next()
+    // 6. Redirect to /dashboard if the user is authenticated
+    if (
+        isPublicRoute &&
+        isAuthenticated &&
+        !req.nextUrl.pathname.startsWith("/dashboard")
+    ) {
+        return NextResponse.redirect(new URL("/dashboard", req.nextUrl))
+    }
+
+    return NextResponse.next()
 }
 
 // Routes Middleware should not run on
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
+    matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
 }
-

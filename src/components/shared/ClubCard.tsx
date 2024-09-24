@@ -4,24 +4,20 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
+import { Club } from "@/lib/types"
 import { Users } from "lucide-react"
 
 type Props = {
-    club: {
-        id: number,
-        name: string,
-        image: string,
-        members: string[],
-    }
+    club: Club
 }
 
 export default function ClubCard({ club }: Props) {
     return (
-        <Card key={club.id} className="overflow-hidden">
+        <Card className="overflow-hidden">
             <CardHeader className="p-0">
                 <div className="aspect-square relative">
                     <img
-                        src={club.image}
+                        src={club.thumbnail || "https://placehold.co/400"}
                         alt={club.name}
                         className="object-cover w-full h-full"
                     />
@@ -31,7 +27,7 @@ export default function ClubCard({ club }: Props) {
                 <CardTitle className="text-sm truncate">{club.name}</CardTitle>
                 <div className="flex items-center space-x-1 text-xs text-gray-500">
                     <Users className="h-3 w-3" />
-                    <span>{club.members.length}</span>
+                    <span>{club.followersCount}</span>
                 </div>
             </CardContent>
         </Card>
