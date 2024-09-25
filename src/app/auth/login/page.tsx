@@ -28,9 +28,7 @@ export default function LoginPage() {
                             required
                         />
                     </div>
-                    <Button className="w-full">
-                        Log In
-                    </Button>
+                    <Button className="w-full">Log In</Button>
                 </form>
                 <p className="mt-4 text-center text-sm text-gray-600">
                     Don't have an account?{" "}

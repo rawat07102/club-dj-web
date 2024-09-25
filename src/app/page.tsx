@@ -93,7 +93,11 @@ export default function LandingPage() {
                                     <Button size="lg">Get Started</Button>
                                 </Link>
                                 <Link href="/auth/login">
-                                    <Button variant="outline" className="text-accent" size="lg">
+                                    <Button
+                                        variant="outline"
+                                        className="text-accent"
+                                        size="lg"
+                                    >
                                         Log In
                                     </Button>
                                 </Link>

@@ -33,7 +33,8 @@ export default async function DashboardLayout({ children }: Props) {
                         <TabsContent value="followed">
                             <div className="space-y-6">
                                 <div>
-                                    <h3 className="font-semibold mb-3 text-sm text-gray-500 uppercase tracking-wider">
+                                    <h3
+                                        className="font-semibold mb-3 text-sm text-gray-500 uppercase tracking-wider">
                                         Clubs
                                     </h3>
                                     <MediaList>
@@ -60,7 +61,7 @@ export default async function DashboardLayout({ children }: Props) {
                         </TabsContent>
                         <TabsContent value="my-content">
                             <div className="space-y-6">
-                                    {/*<div>
+                                {/*<div>
                                     <h3 className="font-semibold mb-3 text-sm text-gray-500 uppercase tracking-wider">
                                         My Playlists
                                     </h3>

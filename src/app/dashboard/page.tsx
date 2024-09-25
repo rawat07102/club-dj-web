@@ -22,6 +22,7 @@ import GridLayout from "@/components/shared/GridLayout"
 import { LogoutButton } from "@/components/dashboard/LogoutButton"
 import CreateClubDialog from "@/components/dashboard/CreateClubDialog"
 import { getClubs } from "@/actions/dashboard"
+import Link from "next/link"
 
 export default async function Dashboard() {
     const clubs = await getClubs()
@@ -93,7 +94,9 @@ export default async function Dashboard() {
                 </div>
                 <GridLayout>
                     {clubs.map((club) => (
-                        <ClubCard key={club.id} club={club} />
+                        <Link key={club.id} href={`/clubs/${club.id}`}>
+                            <ClubCard club={club} />
+                        </Link>
                     ))}
                 </GridLayout>
             </main>

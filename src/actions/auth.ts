@@ -29,17 +29,12 @@ export async function login(formData: FormData) {
     })
 
     cookieStore.set("userId", payload.id, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "strict",
-        path: "/",
         maxAge: 60 * 60 * 24 * 7, // a week
     })
     redirect("/dashboard")
 }
 
 export async function signup(formData: FormData) {
-
     const reqBody = {
         username: formData.get("username"),
         password: formData.get("password"),
@@ -49,8 +44,8 @@ export async function signup(formData: FormData) {
         method: "POST",
         body: JSON.stringify(reqBody),
         headers: {
-            "Content-Type": "application/json"
-        }
+            "Content-Type": "application/json",
+        },
     })
 }
 
@@ -59,4 +54,3 @@ export async function logout() {
     cookieStore.delete("accessToken")
     cookieStore.delete("userId")
 }
-

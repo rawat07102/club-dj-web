@@ -48,7 +48,7 @@ export async function getUser(id?: string): Promise<User> {
 export async function getClubs(): Promise<Club[]> {
     const res = await fetch(apiRoute("/clubs"), {
         next: {
-            tags: ["clubs"]
+            tags: ["clubs"],
         },
     })
     const clubs = await res.json()

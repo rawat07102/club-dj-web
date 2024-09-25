@@ -10,7 +10,6 @@ export function apiRoute(path: string) {
     return process.env.BASE_API_URI + path
 }
 
-
 export function extractAccessToken(cookieStore: ReadonlyRequestCookies) {
     if (!cookieStore.has("accessToken")) {
         throw new Error("cookieStore does not have 'accessToken'")
@@ -25,3 +24,6 @@ export function getUserId(cookieStore: ReadonlyRequestCookies) {
     return cookieStore.get("userId")?.value
 }
 
+export function getYoutubeVideoSrc(id: string) {
+    return `https://www.youtube.com/embed/${id}?&autoplay=1&controls=1&disablekb=0&iv_load_policy=3`
+}
