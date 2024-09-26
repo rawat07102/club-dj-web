@@ -8,6 +8,7 @@ type Props = {
 }
 
 export default function ClubCard({ club }: Props) {
+    console.log(club.thumbnail)
     return (
         <Card className="overflow-hidden cursor-pointer transition-shadow hover:shadow-md">
             <CardHeader className="p-0">
@@ -17,6 +18,7 @@ export default function ClubCard({ club }: Props) {
                             src={club.thumbnail}
                             alt={club.name}
                             className="object-cover w-full h-full"
+                            fill
                         />
                     ) : (
                         <div className="text-2xl font-serif px-4 py-2 bg-gray-200 rounded-full">

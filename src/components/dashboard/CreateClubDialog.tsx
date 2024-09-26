@@ -18,8 +18,6 @@ import React from "react"
 
 export default function CreateClubDialog() {
     const [isCreateClubOpen, setIsCreateClubOpen] = React.useState(false)
-    const [name, setName] = React.useState("")
-    const [description, setDescription] = React.useState("")
 
     return (
         <Dialog open={isCreateClubOpen} onOpenChange={setIsCreateClubOpen}>
@@ -36,17 +34,16 @@ export default function CreateClubDialog() {
                         Fill in the details to create your new music club.
                     </DialogDescription>
                 </DialogHeader>
-                <div className="grid gap-4 py-4">
+                <form
+                    action={createClub}
+                    id="create-club"
+                    className="grid gap-4 py-4"
+                >
                     <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="club-name" className="text-right">
                             Name
                         </Label>
-                        <Input
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            id="club-name"
-                            className="col-span-3"
-                        />
+                        <Input name="name" className="col-span-3" />
                     </div>
                     <div className="grid grid-cols-4 items-center gap-4">
                         <Label
@@ -55,22 +52,15 @@ export default function CreateClubDialog() {
                         >
                             Description
                         </Label>
-                        <Input
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            id="club-description"
-                            className="col-span-3"
-                        />
+                        <Input name="description" className="col-span-3" />
                     </div>
-                </div>
+                    <div className="grid w-full max-w-sm items-center gap-1.5">
+                        <Label htmlFor="file">Thumbnail</Label>
+                        <Input id="file" type="file" name="file" />
+                    </div>
+                </form>
                 <DialogFooter>
-                    <Button
-                        onClick={async () => {
-                            await createClub(name, description)
-                            setIsCreateClubOpen(false)
-                        }}
-                        type="submit"
-                    >
+                    <Button form="create-club" type="submit">
                         Create Club
                     </Button>
                 </DialogFooter>

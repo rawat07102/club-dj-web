@@ -4,7 +4,12 @@ import { apiRoute, extractAccessToken, getUserId } from "@/lib/utils"
 import { revalidateTag } from "next/cache"
 import { cookies } from "next/headers"
 
-export async function createClub(name: string, description: string) {
+export async function createClub(formData: FormData) {
+    const name = formData.get("name")
+    const description = formData.get("description")
+    if (!(name && description && formData.has("file"))) {
+        throw new Error("Please fill all inputs")
+    }
     const res = await fetch(apiRoute("/clubs"), {
         method: "POST",
         headers: {
@@ -20,6 +25,9 @@ export async function createClub(name: string, description: string) {
     if (!res.ok) {
         throw new Error(res.statusText)
     }
+    const clubId = await res.json()
+    console.log(clubId)
+    await uploadClubThumbnail(clubId, formData)
     revalidateTag("clubs")
 }
 
@@ -30,7 +38,6 @@ export async function uploadClubThumbnail(
     await fetch(apiRoute(`/clubs/${clubId}/thumbnail`), {
         method: "PUT",
         headers: {
-            "Content-Type": "multipart/form-data",
             Authorization: extractAccessToken(cookies()),
         },
         body: formData,

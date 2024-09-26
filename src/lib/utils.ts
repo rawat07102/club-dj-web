@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from "clsx"
+import { io } from "socket.io-client"
 import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies"
 import { twMerge } from "tailwind-merge"
 
@@ -24,6 +25,12 @@ export function getUserId(cookieStore: ReadonlyRequestCookies) {
     return cookieStore.get("userId")?.value
 }
 
-export function getYoutubeVideoSrc(id: string) {
-    return `https://www.youtube.com/embed/${id}?&autoplay=1&controls=1&disablekb=0&iv_load_policy=3`
+export function getYoutubeVideoSrc(ids: string[]) {
+    return `https://www.youtube.com/embed/${ids[0]}?&autoplay=1&controls=1&disablekb=0&iv_load_policy=3&playlist=${ids.slice(1).join(",")}`
 }
+
+const socketUrl = process.env.SOCKET_URL || "ws://localhost:4000/socket.io"
+
+export const socket = io(socketUrl, {
+    autoConnect: false,
+})
