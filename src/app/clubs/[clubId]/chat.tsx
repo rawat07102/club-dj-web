@@ -1,20 +1,21 @@
 "use client"
 
+import { getAuthToken } from "@/actions/auth"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { socket } from "@/lib/utils"
 import { Send } from "lucide-react"
-import React, { useState } from "react"
+import React from "react"
 
 type Props = {
     clubId: string
 }
 
 export default function Chat({ clubId }: Props) {
-    const [message, setMessage] = React.useState<string>()
-    const [chatMessages, setChatMessages] = useState<
+    const [message, setMessage] = React.useState<string>("")
+    const [chatMessages, setChatMessages] = React.useState<
         {
             user: {
                 id: string
@@ -24,18 +25,42 @@ export default function Chat({ clubId }: Props) {
             message: string
         }[]
     >([])
+
+    function onNewMessage(newMessage: any) {
+        setChatMessages([...chatMessages, newMessage])
+    }
+
     React.useEffect(() => {
-        socket.on("new-message", (newMessage: any) => {
-            setChatMessages([...chatMessages, newMessage])
-        })
-        return () => {
-            socket.off("new-message")
+        async function socketConnection() {
+            const accessToken = await getAuthToken()
+            socket.auth = {
+                accessToken,
+            }
+            socket.connect()
         }
-    })
+
+        if (!socket.connected) {
+            socketConnection()
+        }
+
+        socket.on("connect", () => {
+            console.log(`connected with id ${socket.id}`)
+            socket.emit("join-room", clubId, (message: string) => {
+                console.log(message)
+            })
+        })
+        socket.on("new-message", onNewMessage)
+
+        return () => {
+            socket.emit("leave-room", clubId)
+            socket.off("new-message")
+            socket.disconnect()
+        }
+    }, [chatMessages])
 
     return (
         <div className="flex flex-col w-full h-screen relative">
-            <ScrollArea className="overflow-auto flex flex-col-reverse max-h-full w-full absolute bottom-14 pb-1">
+            <ScrollArea className="overflow-auto flex flex-col-reverse max-h-[88%] h-full mt-[25%] w-full absolute bottom-14 pb-1">
                 {chatMessages.map((msg) => (
                     <div
                         key={msg.user.id + msg.message.substring(0, 6)}
@@ -57,23 +82,23 @@ export default function Chat({ clubId }: Props) {
                     </div>
                 ))}
             </ScrollArea>
-            <div
-                onSubmit={() => {
-                    socket.emit("message", {
-                        clubId,
-                        message,
-                    })
-                }}
-                className="flex space-x-2 w-[90%] absolute bottom-4 mx-auto"
-            >
+            <div className="flex space-x-2 w-[90%] absolute bottom-6 mx-auto">
                 <Input
-                    name="message"
                     placeholder="Type your message..."
                     className="flex-grow"
                     onChange={(e) => setMessage(e.target.value)}
                     value={message}
                 />
-                <Button disabled={!message} size="icon" variant="outline">
+                <Button
+                    onClick={() => {
+                        socket.emit("message", {
+                            clubId,
+                            message,
+                        })
+                        setMessage("")
+                    }}
+                    disabled={!message}
+                >
                     <Send size="20px" />
                 </Button>
             </div>

@@ -31,7 +31,7 @@ export default async function ClubPage({ params: { clubId } }: Props) {
                         <Chat clubId={clubId} />
                     </TabsContent>
                     <TabsContent value="queue" className="px-4">
-                        <Queue queue={club.queue} />
+                        <Queue clubId={club.id} queue={club.queue} />
                     </TabsContent>
                 </Tabs>
             </main>

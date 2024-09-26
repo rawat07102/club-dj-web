@@ -1,5 +1,3 @@
-"use client"
-
 import { createClub } from "@/actions/dashboard"
 import { Button } from "@/components/ui/button"
 import {
@@ -17,10 +15,8 @@ import { Plus } from "lucide-react"
 import React from "react"
 
 export default function CreateClubDialog() {
-    const [isCreateClubOpen, setIsCreateClubOpen] = React.useState(false)
-
     return (
-        <Dialog open={isCreateClubOpen} onOpenChange={setIsCreateClubOpen}>
+        <Dialog>
             <DialogTrigger asChild>
                 <Button>
                     <Plus className="h-4 w-4 mr-2" />

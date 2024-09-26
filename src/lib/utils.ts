@@ -26,10 +26,14 @@ export function getUserId(cookieStore: ReadonlyRequestCookies) {
 }
 
 export function getYoutubeVideoSrc(ids: string[]) {
-    return `https://www.youtube.com/embed/${ids[0]}?&autoplay=1&controls=1&disablekb=0&iv_load_policy=3&playlist=${ids.slice(1).join(",")}`
+    let src = `https://www.youtube.com/embed/${ids[0]}?&autoplay=1&controls=1&disablekb=0&iv_load_policy=3`
+    if (ids.length > 1) {
+        src = src + `&playlist=${ids.slice(1).join(",")}`
+    }
+    return src
 }
 
-const socketUrl = process.env.SOCKET_URL || "ws://localhost:4000/socket.io"
+export const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "ws://localhost:4000"
 
 export const socket = io(socketUrl, {
     autoConnect: false,
