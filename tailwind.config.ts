@@ -8,6 +8,25 @@ const config: Config = {
     ],
     theme: {
         extend: {
+            animation: {
+                "dropin": "dropdown-in 3s"
+        },
+            keyframes: {
+                "dropdown-in": {
+                    "0%": {
+                        height: "0px",
+                        display: "none",
+                        opacity: "0",
+                    },
+                    "100%": {
+                        height: "fit",
+                        display: "flex",
+                        opacity: "1",
+                    },
+
+                }
+
+            },
             colors: {
                 background: "hsl(var(--background))",
                 foreground: "hsl(var(--foreground))",
@@ -56,6 +75,7 @@ const config: Config = {
                 sm: "calc(var(--radius) - 4px)",
             },
         },
+
     },
     plugins: [require("tailwindcss-animate")],
 }

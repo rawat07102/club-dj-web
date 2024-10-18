@@ -2,13 +2,25 @@ import { clsx, type ClassValue } from "clsx"
 import { io } from "socket.io-client"
 import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies"
 import { twMerge } from "tailwind-merge"
+import axios from "axios"
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
 }
 
 export function apiRoute(path: string) {
-    return process.env.BASE_API_URI + path
+    return process.env.NEXT_PUBLIC_BASE_API_URI + path
+}
+
+export async function fetcher(path: string) {
+    const res = await axios(path, {
+        baseURL: process.env.NEXT_PUBLIC_BASE_API_URI,
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+    return res.data
 }
 
 export function extractAccessToken(cookieStore: ReadonlyRequestCookies) {
@@ -33,7 +45,8 @@ export function getYoutubeVideoSrc(ids: string[]) {
     return src
 }
 
-export const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URL || "ws://localhost:4000"
+export const socketUrl =
+    process.env.NEXT_PUBLIC_SOCKET_URI
 
 export const socket = io(socketUrl, {
     autoConnect: false,

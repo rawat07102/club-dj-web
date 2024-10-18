@@ -7,7 +7,7 @@ import { cookies } from "next/headers"
 export async function createClub(formData: FormData) {
     const name = formData.get("name")
     const description = formData.get("description")
-    if (!(name && description && formData.has("file"))) {
+    if (!(name && description && formData.has("thumbnail"))) {
         throw new Error("Please fill all inputs")
     }
     const res = await fetch(apiRoute("/clubs"), {
@@ -23,6 +23,7 @@ export async function createClub(formData: FormData) {
     })
 
     if (!res.ok) {
+        console.error(await res.json())
         throw new Error(res.statusText)
     }
     const clubId = await res.json()
