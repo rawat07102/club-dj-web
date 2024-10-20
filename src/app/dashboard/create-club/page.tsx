@@ -26,7 +26,7 @@ export default function CreateClub() {
     const [imageFile, setImageFile] = React.useState<File | null>()
     const fileInputRef = React.useRef<HTMLInputElement>(null)
 
-    const { data: genres } = useSWR("/genres", fetcher)
+    const { data: genres, isLoading } = useSWR("/genres", fetcher)
     const [selectedGenres, setSelectedGenres] = React.useState<
         MultiSelectOption[]
     >([])
@@ -157,18 +157,22 @@ export default function CreateClub() {
                         </div>
                         <div>
                             {genres && (
-                                <MultiSelect
-                                    label="Genres"
-                                    options={genres.map(
-                                        ({ id, name }: any) => ({
-                                            value: id,
-                                            label: name,
-                                        })
-                                    )}
-                                    handleSelect={onSelect}
-                                    handleDeSelect={onDeSelect}
-                                    selectedOptions={selectedGenres}
-                                />
+                                <>
+                                    <Label className="ml-1 block text-lg font-medium mb-2">
+                                        Genres
+                                    </Label>
+                                    <MultiSelect
+                                        options={genres.map(
+                                            ({ id, name }: any) => ({
+                                                value: id,
+                                                label: name,
+                                            })
+                                        )}
+                                        handleSelect={onSelect}
+                                        handleDeSelect={onDeSelect}
+                                        selectedOptions={selectedGenres}
+                                    />
+                                </>
                             )}
                         </div>
                     </div>

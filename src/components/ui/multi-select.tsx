@@ -1,10 +1,9 @@
 "use client"
-import { Label } from "@radix-ui/react-label"
 import Fuse from "fuse.js"
 import { X } from "lucide-react"
 import React from "react"
-import { Button } from "./button"
-import { ScrollArea } from "./scroll-area"
+import { Popover, PopoverContent } from "@/components/ui/popover"
+import { Anchor } from "@radix-ui/react-popover"
 
 export interface MultiSelectOption {
     label: string
@@ -17,14 +16,10 @@ export interface InputProps
     selectedOptions: MultiSelectOption[]
     handleSelect: (option: MultiSelectOption) => void
     handleDeSelect: (option: MultiSelectOption) => void
-    label?: string
 }
 
 const MultiSelect = React.forwardRef<HTMLInputElement, InputProps>(
-    (
-        { options, handleDeSelect, handleSelect, selectedOptions, label },
-        _ref
-    ) => {
+    ({ options, handleDeSelect, handleSelect, selectedOptions }, _ref) => {
         const fuse = React.useMemo(() => {
             return new Fuse(options, {
                 keys: ["label"],
@@ -38,6 +33,7 @@ const MultiSelect = React.forwardRef<HTMLInputElement, InputProps>(
         >([])
         const [showOptions, setShowOptions] = React.useState(false)
         const [textInput, setTextInput] = React.useState("")
+        const inputRef = React.useRef<HTMLInputElement>(null)
         React.useEffect(() => {
             if (textInput.trim() === "") {
                 setFuzzyOptions(options)
@@ -49,11 +45,10 @@ const MultiSelect = React.forwardRef<HTMLInputElement, InputProps>(
         function handleTextInput(e: React.ChangeEvent<HTMLInputElement>) {
             setTextInput(e.target.value)
         }
+
         return (
-            <div className="w-full justify-stretch flex flex-col gap-1">
-                <Label className="ml-1">{label}</Label>
-                <div className="flex border border-border rounded-lg p-1">
-                    <div className="flex gap-2">
+            <div className="relative w-full justify-stretch flex flex-col gap-1">
+                <div className="flex flex-wrap gap-1 border border-border focus-within:ring ring-ring ring-offset-ring rounded-lg p-1">
                         {selectedOptions.map((opt) => (
                             <div
                                 key={opt.value}
@@ -66,35 +61,41 @@ const MultiSelect = React.forwardRef<HTMLInputElement, InputProps>(
                                 </button>
                             </div>
                         ))}
-                    </div>
                     <input
-                        className="pl-1 w-full flex-1 min-w-12 outline-none bg-none"
                         onChange={handleTextInput}
                         value={textInput}
-                        onFocus={() => setShowOptions(true)}
+                        onClick={() => setShowOptions(true)}
+                        ref={inputRef}
+                        className="flex-1 outline-none"
                     />
                 </div>
-                {showOptions && (
-                    <div className="relative animate-in fade-in-0 slide-in-from-top-2 zoom-in-95 ease-in z-50">
-                        <div
-                            onClick={() => setShowOptions(false)}
-                            className="fixed top-0 left-0 h-full w-full -z-10"
-                        ></div>
-                        <ScrollArea className="h-48 bg-popover border-border border rounded-lg z-[999]">
-                            <div className="mt-1 ">
-                                {fuzzyOptions.map((opt) => (
-                                    <div
-                                        key={opt.value}
-                                        className="hover:bg-accent hover:text-accent-foreground py-1 px-2 cursor-default rounded-sm"
-                                        onClick={() => handleSelect(opt)}
-                                    >
-                                        {opt.label}
-                                    </div>
-                                ))}
+                <Popover
+                    open={showOptions}
+                    onOpenChange={(open) => setShowOptions(open)}
+                >
+                    <Anchor></Anchor>
+                    <PopoverContent
+                        onOpenAutoFocus={(e) => e.preventDefault()}
+                        align="start"
+                        className="max-h-72 overflow-y-auto"
+                    >
+                        {fuzzyOptions.length > 0 ? (
+                            fuzzyOptions.map((opt) => (
+                                <div
+                                    key={opt.value}
+                                    className="hover:bg-accent hover:text-accent-foreground py-1 px-2 cursor-default rounded-sm"
+                                    onClick={() => handleSelect(opt)}
+                                >
+                                    {opt.label}
+                                </div>
+                            ))
+                        ) : (
+                            <div className="flex justify-center items-center">
+                                No options found.
                             </div>
-                        </ScrollArea>
-                    </div>
-                )}
+                        )}
+                    </PopoverContent>
+                </Popover>
             </div>
         )
     }
