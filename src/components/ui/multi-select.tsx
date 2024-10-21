@@ -48,7 +48,7 @@ const MultiSelect = React.forwardRef<HTMLInputElement, InputProps>(
 
         return (
             <div className="relative w-full justify-stretch flex flex-col gap-1">
-                <div className="flex flex-wrap gap-1 border border-border focus-within:ring ring-ring ring-offset-ring rounded-lg p-1">
+                <div className="flex flex-wrap gap-1 border border-input focus-within:ring-2 ring-offset-2 ring-ring rounded p-1">
                         {selectedOptions.map((opt) => (
                             <div
                                 key={opt.value}

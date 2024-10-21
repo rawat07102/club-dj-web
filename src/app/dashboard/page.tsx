@@ -2,7 +2,7 @@ import React from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Bell, Search, ChevronDown } from "lucide-react"
+import { Bell, Search, ChevronDown, Plus } from "lucide-react"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -20,7 +20,6 @@ import {
 import ClubCard from "@/components/shared/ClubCard"
 import GridLayout from "@/components/shared/GridLayout"
 import { LogoutButton } from "@/components/dashboard/LogoutButton"
-import CreateClubDialog from "@/components/dashboard/CreateClubDialog"
 import { getClubs } from "@/actions/dashboard"
 import Link from "next/link"
 
@@ -61,10 +60,10 @@ export default async function Dashboard() {
                                     className="flex items-center space-x-2"
                                 >
                                     <Avatar className="h-8 w-8">
-                                        <AvatarImage
+                                        {/*<AvatarImage
                                             src="/placeholder-avatar.jpg"
                                             alt="User"
-                                        />
+                                        />*/}
                                         <AvatarFallback>U</AvatarFallback>
                                     </Avatar>
                                     <span>User</span>
@@ -90,7 +89,12 @@ export default async function Dashboard() {
             <main className="flex-1 overflow-y-auto p-4">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-2xl font-bold">Discover Clubs</h2>
-                    <CreateClubDialog />
+                    <Link href="/dashboard/create-club">
+                        <Button>
+                            <Plus className="h-4 w-4 mr-2" />
+                            Create Club
+                        </Button>
+                    </Link>
                 </div>
                 <GridLayout>
                     {clubs.map((club) => (

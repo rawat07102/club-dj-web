@@ -18,15 +18,29 @@ import React from "react"
 import { MultiSelect, MultiSelectOption } from "@/components/ui/multi-select"
 import useSWR from "swr"
 import { fetcher } from "@/lib/utils"
+import { useRouter } from "next/navigation"
+import { Progress } from "@/components/ui/progress"
 
 export default function CreateClub() {
+    const router = useRouter()
+
     const [clubName, setClubName] = useState("")
-    const [clubDescription, setClubDescription] = useState("")
     const [thumbnail, setThumbnail] = useState<string | null>(null)
     const [imageFile, setImageFile] = React.useState<File | null>()
+    const [clubDescription, setClubDescription] = useState("")
+    const [loading, setLoading] = React.useState(false)
+    const [progress, setProgress] = React.useState(10)
+
     const fileInputRef = React.useRef<HTMLInputElement>(null)
 
-    const { data: genres, isLoading } = useSWR("/genres", fetcher)
+    React.useEffect(() => {
+        if (loading) {
+            const timer = setTimeout(() => setProgress(90), 500)
+            return () => clearTimeout(timer)
+        }
+    }, [loading])
+
+    const { data: genres } = useSWR("/genres", fetcher)
     const [selectedGenres, setSelectedGenres] = React.useState<
         MultiSelectOption[]
     >([])
@@ -60,17 +74,27 @@ export default function CreateClub() {
         }
     }
 
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault()
-        if (!(imageFile && clubName && clubDescription)) {
-            return
+    const handleSubmit = async () => {
+        if (
+            !(
+                imageFile &&
+                clubName &&
+                clubDescription &&
+                selectedGenres.length > 0
+            )
+        ) {
+            return alert("Please fill all inputs.")
         }
         const formData = new FormData()
         formData.append("name", clubName)
         formData.append("description", clubDescription)
         formData.append("thumbnail", imageFile)
-
-        await createClub(formData)
+        selectedGenres.forEach(({ value }) =>
+            formData.append("genres", value.toString())
+        )
+        setLoading(true)
+        const clubId = await createClub(formData)
+        router.push(`/clubs/${clubId}`)
     }
 
     return (
@@ -81,7 +105,13 @@ export default function CreateClub() {
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                <form onSubmit={handleSubmit}>
+                {loading && (
+                    <Progress
+                        value={progress}
+                        className="fixed top-px left-0 h-1 w-screen"
+                    />
+                )}
+                <form>
                     <div className="space-y-6">
                         <div>
                             <Label
