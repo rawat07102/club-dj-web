@@ -58,11 +58,19 @@ export async function getUser(id?: string): Promise<User> {
     return user
 }
 
-export async function getClubs(): Promise<Club[]> {
-    console.log("[getClubs()] getting clubs....")
-    const res = await fetch(apiRoute("/clubs"), {
+type QueryParams = {
+    [key: string]: string | number
+}
+
+export async function getClubs(queryParams: QueryParams = {}): Promise<Club[]> {
+    let url = "/clubs?"
+    Object.keys(queryParams).forEach((key) => {
+        url = url + `${key}=${queryParams[key]}&`
+    })
+
+    const res = await fetch(apiRoute(url), {
         next: {
-            tags: ["clubs"],
+            tags: [url],
         },
     })
     const clubs = await res.json()
