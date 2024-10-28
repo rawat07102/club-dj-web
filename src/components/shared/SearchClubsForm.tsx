@@ -84,7 +84,7 @@ export default function SearchClubsForm({}: Props) {
                                     className="flex w-full transition-colors gap-1 items-center hover:bg-accent hover:text-accent-foreground cursor-default rounded-sm"
                                 >
                                     <div className="relative h-[50px] w-[50px] bg-secondary overflow-hidden rounded-md">
-                                        {club.thumbnail && (
+                                        {club.thumbnail ? (
                                             <Image
                                                 src={club.thumbnail}
                                                 alt={club.name}
@@ -92,6 +92,12 @@ export default function SearchClubsForm({}: Props) {
                                                 height={50}
                                                 width={50}
                                             />
+                                        ) : (
+                                            <span className="w-full h-full flex items-center justify-center text-accent-foreground font-semibold">
+                                                {club.name
+                                                    .toUpperCase()
+                                                    .charAt(0)}
+                                            </span>
                                         )}
                                     </div>
                                     <div className="flex flex-col gap-1 flex-1">
