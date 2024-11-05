@@ -11,15 +11,14 @@ export default function ClubCard({ club }: Props) {
     return (
         <Card className="overflow-hidden cursor-pointer transition-shadow hover:shadow-md">
             <CardHeader className="p-0">
-                <div className="aspect-square flex items-center justify-center relative bg-gray-100">
+                <div className="aspect-video flex items-center justify-center relative bg-gray-100">
                     {club.thumbnail ? (
                         <Image
                             src={club.thumbnail}
                             alt={club.name}
                             className="object-cover w-full h-full"
                             quality={50}
-                            height={250}
-                            width={250}
+                            fill
                         />
                     ) : (
                         <div className="text-2xl font-serif px-4 py-2 bg-gray-200 rounded-full">

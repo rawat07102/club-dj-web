@@ -1,0 +1,75 @@
+"use server"
+import { Club, Playlist } from "@/lib/types"
+import { apiRoute, extractAccessToken } from "@/lib/utils"
+import { revalidatePath, revalidateTag } from "next/cache"
+import { cookies } from "next/headers"
+
+export async function createNewPlaylist(name: string, clubId: Club["id"]) {
+    const res = await fetch(apiRoute(`/clubs/${clubId}/playlists`), {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: extractAccessToken(cookies()),
+        },
+        body: JSON.stringify({
+            name,
+            description: "",
+        }),
+    })
+
+    if (!res.ok) {
+        console.error(await res.json())
+        throw new Error(res.statusText)
+    }
+
+    const playlist = await res.json()
+
+    revalidatePath(`/dashboard/clubs/${clubId}`)
+    return playlist.id
+}
+
+export async function createPlaylist(formData: FormData) {
+    const name = formData.get("name")
+    const description = formData.get("description")
+    const clubId = formData.get("clubId")
+
+    if (!(name && description && formData.has("thumbnail"))) {
+        throw new Error("Please fill all inputs")
+    }
+
+    const res = await fetch(apiRoute(`clubs/${clubId}/playlists`), {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: extractAccessToken(cookies()),
+        },
+        body: JSON.stringify({
+            name,
+            description,
+        }),
+    })
+
+    if (!res.ok) {
+        console.error(await res.json())
+        throw new Error(res.statusText)
+    }
+
+    const playlistId = await res.json()
+    await uploadPlaylistThumbnail(playlistId, formData)
+
+    revalidateTag(`/clubs/${clubId}`)
+    return playlistId
+}
+
+export async function uploadPlaylistThumbnail(
+    playlistId: Playlist["id"],
+    formData: FormData
+) {
+    await fetch(apiRoute(`/playlists/${playlistId}/thumbnail`), {
+        method: "PUT",
+        headers: {
+            Authorization: extractAccessToken(cookies()),
+        },
+        body: formData,
+    })
+}

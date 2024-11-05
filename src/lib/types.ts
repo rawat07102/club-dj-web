@@ -19,10 +19,15 @@ export interface User extends BaseEntity {
     clubsFollowed: Club[]
 }
 
+export interface Genre extends BaseEntity {
+    name: string
+}
+
 export interface Club extends BaseEntity {
     name: string
     description: string
     queue: string[]
+    genres: Genre[]
     thumbnail?: string
     currentDJ: User
     djWishlist: User[]
@@ -35,12 +40,12 @@ export interface Club extends BaseEntity {
 
 export interface Playlist extends BaseEntity {
     name: string
-    list: string[]
+    list?: string[]
     description: string
     likeCount: number
     creator: User
     club: Club
-    sharedWith: User[]
+    thumbnail?: string
 }
 
 export interface FriendRequest extends BaseEntity {

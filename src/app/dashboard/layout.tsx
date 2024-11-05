@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { getUser } from "@/actions/dashboard"
 import { Music } from "lucide-react"
 import React from "react"
+import Link from "next/link"
 
 type Props = {
     children: React.ReactNode
@@ -13,14 +14,16 @@ type Props = {
 export default async function DashboardLayout({ children }: Props) {
     const user = await getUser()
     return (
-        <div className="flex h-screen">
+        <div className="flex gap-8 h-screen pr-8">
             {/* Sidebar */}
             <aside className="w-64 shadow-md">
                 <div className="p-4">
-                    <h1 className="text-2xl font-bold flex items-center">
-                        <Music className="h-6 w-6 mr-2" />
-                        Club.dj
-                    </h1>
+                    <Link href="/dashboard">
+                        <h1 className="text-2xl font-bold flex items-center">
+                            <Music className="h-6 w-6 mr-2" />
+                            Club.dj
+                        </h1>
+                    </Link>
                 </div>
                 <ScrollArea className="h-[calc(100vh-80px)] px-4">
                     <Tabs defaultValue="followed" className="w-full">
@@ -47,7 +50,7 @@ export default async function DashboardLayout({ children }: Props) {
                                         My Clubs
                                     </h3>
                                     <ul className="space-y-2">
-                                            {user.clubs.map((club, i) => (
+                                        {user.clubs.map((club) => (
                                             <li key={club.id}>
                                                 <Button
                                                     variant="ghost"
@@ -55,7 +58,10 @@ export default async function DashboardLayout({ children }: Props) {
                                                 >
                                                     <div className="w-10 h-10 rounded-md mr-3 flex items-center justify-center overflow-hidden">
                                                         <img
-                                                            src={club.thumbnail || "https://placehold.co/400"}
+                                                            src={
+                                                                club.thumbnail ||
+                                                                "https://placehold.co/400"
+                                                            }
                                                         />
                                                     </div>
                                                     <div className="text-left">
@@ -76,7 +82,7 @@ export default async function DashboardLayout({ children }: Props) {
                     </Tabs>
                 </ScrollArea>
             </aside>
-            {children}
+            <main className="flex-1 my-4">{children}</main>
         </div>
     )
 }

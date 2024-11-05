@@ -13,7 +13,7 @@ type Props = {
         id: number
         image: string
         title: string
-        tracks: string[]
+        videos: string[]
         likes: number
         creator: string
     }
@@ -49,7 +49,7 @@ export default function PlaylistCard({ playlist }: Props) {
             <CardFooter className="p-4 pt-0 flex justify-between items-center">
                 <div className="flex items-center space-x-1 text-xs text-gray-500">
                     <Music className="h-3 w-3" />
-                    <span>{playlist.tracks}</span>
+                    <span>{playlist.videos}</span>
                 </div>
                 <div className="flex items-center space-x-1 text-xs text-gray-500">
                     <Heart className="h-3 w-3" />

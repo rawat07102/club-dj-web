@@ -1,18 +1,33 @@
 "use server"
 
+import { Club, Playlist } from "@/lib/types"
 import { apiRoute, extractAccessToken, getUserId } from "@/lib/utils"
 import { revalidateTag } from "next/cache"
 import { cookies } from "next/headers"
 
-export async function fetchClubById(clubId: string) {
+export async function fetchClubById(clubId: string): Promise<Club> {
     const res = await fetch(apiRoute(`/clubs/${clubId}`), {
         next: {
-            tags: [`/clubs/${clubId}`]
-        }
+            tags: [`/clubs/${clubId}`],
+        },
     })
     const body = await res.json()
     if (!res.ok) {
         console.log(body)
+        throw new Error(res.statusText)
+    }
+    return body
+}
+
+export async function fetchPlaylistById(playlistId: string): Promise<Playlist> {
+    const res = await fetch(apiRoute(`/playlists/${playlistId}`), {
+        next: {
+            tags: [`/playlists/${playlistId}`],
+        },
+    })
+    const body = await res.json()
+    if (!res.ok) {
+        console.error(body)
         throw new Error(res.statusText)
     }
     return body
