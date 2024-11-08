@@ -45,12 +45,13 @@ export async function getVideoById(id: string) {
             "Content-Type": "application/json",
         },
     })
+    const body = await res.json()
     if (!res.ok) {
+        console.error(body)
         throw "Error while fetching: getVideoById"
     }
 
-    const data = await res.json()
-    return data.items[0]
+    return body.items[0]
 }
 
 export async function addVideoToQueue(clubId: number, formData: FormData) {

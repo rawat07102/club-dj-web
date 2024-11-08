@@ -1,7 +1,9 @@
 import Image from "next/image"
 import { fetchPlaylistById } from "@/actions/clubs"
 import { Calendar, Clock } from "lucide-react"
-import QueueCard from "@/app/clubs/[clubId]/player/queue-card"
+import AddVideo from "./add-video"
+import Link from "next/link"
+import VideoCard from "./VideoCard"
 
 type Props = {
     params: {
@@ -18,10 +20,11 @@ export default async function PlaylistPage({ params: { playlistId } }: Props) {
     )
 
     return (
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-8 p-8">
             <div className="flex flex-col gap-2">
                 <div className="flex flex-row items-center gap-2">
-                    <div className="relative h-24 w-24 bg-secondary rounded-lg overflow-hidden">
+                    <div className="relative h-24 w-24 bg-secondary rounded-lg
+                    overflow-hidden">
                         {playlist.thumbnail && (
                             <Image
                                 src={playlist.thumbnail}
@@ -52,12 +55,18 @@ export default async function PlaylistPage({ params: { playlistId } }: Props) {
             </div>
 
             <div className="flex flex-col gap-4">
-                <div>
+                <div className="flex items-center gap-8">
                     <h2 className="text-xl font-medium">Videos</h2>
+                    <div>
+                        <AddVideo playlistId={playlistId} />
+                    </div>
                 </div>
-                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2
+                    md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
                     {playlist.list?.map((videoId) => (
-                        <QueueCard key={videoId} videoId={videoId} />
+                        <Link key={videoId} href={`${playlistId}/${videoId}`}>
+                            <VideoCard videoId={videoId} />
+                        </Link>
                     ))}
                 </div>
             </div>

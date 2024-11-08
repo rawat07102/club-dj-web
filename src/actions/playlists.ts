@@ -37,7 +37,7 @@ export async function createPlaylist(formData: FormData) {
         throw new Error("Please fill all inputs")
     }
 
-    const res = await fetch(apiRoute(`clubs/${clubId}/playlists`), {
+    const res = await fetch(apiRoute(`/clubs/${clubId}/playlists`), {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -72,4 +72,42 @@ export async function uploadPlaylistThumbnail(
         },
         body: formData,
     })
+}
+
+export async function addVideoToPlaylist(playlistId: string, formData: FormData) {
+    const videoId = formData.get("videoId")
+    const res = await fetch(apiRoute(`/playlists/${playlistId}/list`), {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: extractAccessToken(cookies()),
+        },
+        body: JSON.stringify({
+            videoId,
+        }),
+    })
+
+    if (!res.ok) {
+        console.log(await res.json())
+        throw new Error(res.statusText)
+    }
+
+    revalidateTag(`/playlists/${playlistId}`)
+}
+
+export async function removeVideoFromPlaylist(playlistId: string, videoId: string) {
+    const res = await fetch(apiRoute(`/playlists/${playlistId}/list/${videoId}`), {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: extractAccessToken(cookies()),
+        },
+    })
+
+    if (!res.ok) {
+        console.log(await res.json())
+        throw new Error(res.statusText)
+    }
+
+    revalidateTag(`/playlists/${playlistId}`)
 }

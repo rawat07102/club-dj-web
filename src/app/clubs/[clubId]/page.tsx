@@ -19,7 +19,7 @@ export default async function ClubPage({ params: { clubId } }: Props) {
     )
 
     return (
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-8 p-8">
             <div className="flex flex-col gap-2">
                 <div className="flex flex-row items-center gap-2">
                     <div className="relative h-24 w-24 bg-secondary rounded-lg overflow-hidden">
@@ -70,12 +70,19 @@ export default async function ClubPage({ params: { clubId } }: Props) {
                         clubId={club.id}
                     />
                 </div>
-                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+                <div
+                    className="grid gap-4 grid-cols-1 sm:grid-cols-2
+                    md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5
+                    2xl:grid-cols-6"
+                >
                     {club.playlists.map((playlist) => (
                         <div className="rounded-lg flex flex-col gap-2">
                             <Link
-                                href={`${clubId}/playlist/${playlist.id}/player`}
-                                className="aspect-video rounded-lg flex cursor-pointer items-center justify-center hover:shadow-primary/20 hover:shadow ease-in transition-shadow relative bg-gray-100"
+                                href={`${clubId}/playlists/${playlist.id}/${playlist.list ? playlist.list[0] : "empty-list"}`}
+                                className="aspect-video rounded-lg flex
+                                cursor-pointer items-center justify-center
+                                hover:shadow-primary/20 hover:shadow ease-in
+                                transition-shadow relative bg-gray-100"
                             >
                                 {playlist.thumbnail ? (
                                     <Image
