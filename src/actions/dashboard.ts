@@ -17,7 +17,7 @@ export async function createClub(formData: FormData) {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            Authorization: extractAccessToken(cookies()),
+            Authorization: extractAccessToken(await cookies()),
         },
         body: JSON.stringify({
             name,
@@ -44,14 +44,14 @@ export async function uploadClubThumbnail(
     await fetch(apiRoute(`/clubs/${clubId}/thumbnail`), {
         method: "PUT",
         headers: {
-            Authorization: extractAccessToken(cookies()),
+            Authorization: extractAccessToken(await cookies()),
         },
         body: formData,
     })
 }
 
 export async function getUser(id?: string): Promise<User> {
-    const userId = id || getUserId(cookies())
+    const userId = id || getUserId(await cookies())
     const res = await fetch(apiRoute(`/users/${userId}`))
 
     const user = await res.json()
@@ -75,4 +75,45 @@ export async function getClubs(queryParams: QueryParams = {}): Promise<Club[]> {
     })
     const clubs = await res.json()
     return clubs
+}
+
+export default async function editClub(formData: FormData) {
+    const clubId = formData.get("clubId")
+
+    if (!clubId) {
+        throw new Error("Club Id is required as formData field.")
+    }
+
+    const name = formData.get("name")
+    const description = formData.get("description")
+    //const genres = formData.getAll("genres")
+
+    const body: Record<string, any> = {}
+    if (name) {
+        body["name"] = name
+    }
+    if (description) {
+        body["description"] = description
+    }
+    console.log(body)
+
+    const res = await fetch(apiRoute(`/clubs/${clubId}`), {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: extractAccessToken(await cookies()),
+        },
+        body: JSON.stringify(body),
+    })
+
+    if (!res.ok) {
+        console.error(await res.json())
+        throw new Error(res.statusText)
+    }
+
+    if (formData.has("thumbnail")) {
+        await uploadClubThumbnail(clubId.toString(), formData)
+    }
+    revalidateTag(`/clubs/${clubId}`)
+    return clubId
 }

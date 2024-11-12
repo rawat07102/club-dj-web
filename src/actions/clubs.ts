@@ -33,9 +33,9 @@ export async function fetchPlaylistById(playlistId: string): Promise<Playlist> {
     return body
 }
 
-export async function isClubCreator(clubId: string) {
-    const userId = getUserId(cookies())
-    return userId === clubId
+export async function isClubCreator(creatorId: string) {
+    const userId = getUserId(await cookies())
+    return userId == creatorId
 }
 
 export async function getVideoById(id: string) {
@@ -60,7 +60,7 @@ export async function addVideoToQueue(clubId: number, formData: FormData) {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
-            Authorization: extractAccessToken(cookies()),
+            Authorization: extractAccessToken(await cookies()),
         },
         body: JSON.stringify({
             videoId,

@@ -1,17 +1,26 @@
 import Image from "next/image"
-import { fetchPlaylistById } from "@/actions/clubs"
+import { fetchClubById, fetchPlaylistById, isClubCreator } from "@/actions/clubs"
 import { Calendar, Clock } from "lucide-react"
 import AddVideo from "./add-video"
 import Link from "next/link"
 import VideoCard from "./VideoCard"
+import { getUser } from "@/actions/dashboard"
 
 type Props = {
-    params: {
-        playlistId: string
-    }
+    params: Promise<{
+        playlistId: string,
+        clubId: string
+    }>
 }
 
-export default async function PlaylistPage({ params: { playlistId } }: Props) {
+export default async function PlaylistPage(props: Props) {
+    const params = await props.params;
+
+    const {
+        playlistId,
+        clubId
+    } = params;
+
     const playlist = await fetchPlaylistById(playlistId)
 
     const daysSinceLastUpdate = Math.floor(

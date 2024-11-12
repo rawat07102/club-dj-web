@@ -11,7 +11,7 @@ export default function Queue({ queue, videoId }: Props) {
     return (
         <ScrollArea className="w-full">
             <div className="flex flex-col gap-2 py-2">
-                {queue.map((id) => (
+                {queue && queue.map((id) => (
                     <QueueCard
                         key={id}
                         videoId={id}

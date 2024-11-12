@@ -1,5 +1,5 @@
 interface BaseEntity {
-    id: number
+    id: string
     created: Date
     updated: Date
 }
@@ -31,7 +31,7 @@ export interface Club extends BaseEntity {
     thumbnail?: string
     currentDJ: User
     djWishlist: User[]
-    creatorId: number
+    creatorId: string
     creator: User
     followers: User[]
     followersCount: number

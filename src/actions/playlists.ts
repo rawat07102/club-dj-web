@@ -9,7 +9,7 @@ export async function createNewPlaylist(name: string, clubId: Club["id"]) {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            Authorization: extractAccessToken(cookies()),
+            Authorization: extractAccessToken(await cookies()),
         },
         body: JSON.stringify({
             name,
@@ -41,7 +41,7 @@ export async function createPlaylist(formData: FormData) {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            Authorization: extractAccessToken(cookies()),
+            Authorization: extractAccessToken(await cookies()),
         },
         body: JSON.stringify({
             name,
@@ -68,7 +68,7 @@ export async function uploadPlaylistThumbnail(
     await fetch(apiRoute(`/playlists/${playlistId}/thumbnail`), {
         method: "PUT",
         headers: {
-            Authorization: extractAccessToken(cookies()),
+            Authorization: extractAccessToken(await cookies()),
         },
         body: formData,
     })
@@ -80,7 +80,7 @@ export async function addVideoToPlaylist(playlistId: string, formData: FormData)
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
-            Authorization: extractAccessToken(cookies()),
+            Authorization: extractAccessToken(await cookies()),
         },
         body: JSON.stringify({
             videoId,
@@ -100,7 +100,7 @@ export async function removeVideoFromPlaylist(playlistId: string, videoId: strin
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
-            Authorization: extractAccessToken(cookies()),
+            Authorization: extractAccessToken(await cookies()),
         },
     })
 

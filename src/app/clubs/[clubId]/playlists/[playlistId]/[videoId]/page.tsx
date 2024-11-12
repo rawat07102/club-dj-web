@@ -5,22 +5,29 @@ import Queue from "./queue"
 import { Separator } from "@/components/ui/separator"
 
 type Props = {
-    params: {
+    params: Promise<{
         clubId: string
         playlistId: string
         videoId: string
-    }
+    }>
 }
 
-export default async function PlaylistPlayer({
-    params: { clubId, playlistId, videoId },
-}: Props) {
+export default async function PlaylistPlayer(props: Props) {
+    const params = await props.params;
+
+    const {
+        clubId,
+        playlistId,
+        videoId
+    } = params;
+
     const playlist = await fetchPlaylistById(playlistId)
 
     return (
         <main className="w-full flex">
             <div className="w-full max-w-xs">
-                <div className="flex-col top-0 p-2 z-50 gap-2 w-full bg-background flex justify-center items-center">
+                <div className="flex-col top-0 p-2 z-50 gap-2 w-full
+                bg-background flex justify-center items-center">
                     <h1 className="text-lg">Queue</h1>
                     <Separator />
                 </div>

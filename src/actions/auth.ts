@@ -17,7 +17,7 @@ export async function login(formData: FormData) {
         },
     })
     const { accessToken, payload } = await res.json()
-    const cookieStore = cookies()
+    const cookieStore = await cookies()
 
     cookieStore.set("accessToken", accessToken, {
         httpOnly: true,
@@ -49,13 +49,13 @@ export async function signup(formData: FormData) {
 }
 
 export async function logout() {
-    const cookieStore = cookies()
+    const cookieStore = await cookies()
     cookieStore.delete("accessToken")
     cookieStore.delete("userId")
 }
 
 export async function getAuthToken() {
-    const accessToken = cookies().get("accessToken")?.value
+    const accessToken = (await cookies()).get("accessToken")?.value
     if (!accessToken) {
         throw new Error("No accessToken found in cookies")
     }

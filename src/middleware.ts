@@ -15,7 +15,7 @@ export default async function middleware(req: NextRequest) {
     const isPublicRoute = publicRoutes.includes(path)
 
     // 3. Decrypt the session from the cookie
-    const cookieStore = cookies()
+    const cookieStore = await cookies()
 
     const isAuthenticated =
         cookieStore.has("accessToken") && cookieStore.has("userId")

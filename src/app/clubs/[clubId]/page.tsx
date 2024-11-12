@@ -1,66 +1,30 @@
-import { fetchClubById } from "@/actions/clubs"
+import { fetchClubById, isClubCreator } from "@/actions/clubs"
 import Image from "next/image"
-import { Badge } from "@/components/ui/badge"
-import { Calendar, Clock } from "lucide-react"
 import Link from "next/link"
 import CreatePlaylist from "./playlists/[playlistId]/create-playlist"
+import EditableHeader from "./edit-club-details-dialog"
+import ClubHeader from "./club-header"
 
 type Props = {
-    params: {
+    params: Promise<{
         clubId: string
-    }
+    }>
 }
 
-export default async function ClubPage({ params: { clubId } }: Props) {
-    const club = await fetchClubById(clubId)
-    const daysSinceLastUpdate = Math.floor(
-        (new Date().getTime() - new Date(club.updated).getTime()) /
-            (1000 * 3600 * 24)
-    )
+export default async function ClubPage(props: Props) {
+    const params = await props.params
 
+    const { clubId } = params
+
+    const club = await fetchClubById(clubId)
+    const allowEdit = await isClubCreator(club.creatorId)
     return (
         <div className="flex flex-col gap-8 p-8">
-            <div className="flex flex-col gap-2">
-                <div className="flex flex-row items-center gap-2">
-                    <div className="relative h-24 w-24 bg-secondary rounded-lg overflow-hidden">
-                        {club.thumbnail && (
-                            <Image
-                                src={club.thumbnail}
-                                alt={club.name}
-                                quality={50}
-                                fill
-                            />
-                        )}
-                    </div>
-                    <div className="flex flex-col gap-2">
-                        <h1 className="text-4xl font-bold">{club.name}</h1>
-                        <p className="text-sm text-muted-foreground">
-                            Created by {club.creator.username}
-                        </p>
-                    </div>
-                </div>
-                <div className="flex flex-col gap-2">
-                    <p className="text-gray-600">{club.description}</p>
-                    <div className="flex flex-wrap gap-2">
-                        {club.genres.map((genre) => (
-                            <Badge key={genre.id} variant="secondary">
-                                {genre.name}
-                            </Badge>
-                        ))}
-                    </div>
-                    <div className="flex items-center gap-4 text-sm text-gray-500">
-                        <div className="flex items-center">
-                            <Calendar className="mr-2 h-4 w-4" />
-                            Created on{" "}
-                            {new Date(club.created).toLocaleDateString()}
-                        </div>
-                        <div className="flex items-center">
-                            <Clock className="mr-2 h-4 w-4" />
-                            Last updated {daysSinceLastUpdate} days ago
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {allowEdit ? (
+                <EditableHeader club={club} />
+            ) : (
+                <ClubHeader club={club} />
+            )}
 
             <div className="flex flex-col gap-4">
                 <div className="flex items-center gap-2">
@@ -76,9 +40,16 @@ export default async function ClubPage({ params: { clubId } }: Props) {
                     2xl:grid-cols-6"
                 >
                     {club.playlists.map((playlist) => (
-                        <div className="rounded-lg flex flex-col gap-2">
+                        <div
+                            key={playlist.id}
+                            className="rounded-lg flex flex-col gap-2"
+                        >
                             <Link
-                                href={`${clubId}/playlists/${playlist.id}/${playlist.list ? playlist.list[0] : "empty-list"}`}
+                                href={getUrl(
+                                    clubId,
+                                    playlist.id,
+                                    playlist.list
+                                )}
                                 className="aspect-video rounded-lg flex
                                 cursor-pointer items-center justify-center
                                 hover:shadow-primary/20 hover:shadow ease-in
@@ -94,7 +65,10 @@ export default async function ClubPage({ params: { clubId } }: Props) {
                                         className="rounded-lg"
                                     />
                                 ) : (
-                                    <div className="text-2xl font-serif px-4 py-2 bg-gray-200 rounded-full">
+                                    <div
+                                        className="text-2xl font-serif px-4
+                                        py-2 bg-gray-200 rounded-full"
+                                    >
                                         {playlist.name[0].toUpperCase()}
                                     </div>
                                 )}
@@ -119,4 +93,8 @@ export default async function ClubPage({ params: { clubId } }: Props) {
             </div>
         </div>
     )
+}
+
+function getUrl(clubId: string, playlistId: string, list?: string[]) {
+    return `${clubId}/playlists/${playlistId}/${list ? list[0] : "empty-list"}`
 }

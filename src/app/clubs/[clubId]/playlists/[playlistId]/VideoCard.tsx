@@ -12,7 +12,8 @@ export default async function VideoCard({ videoId }: Props) {
         <div className="rounded-lg flex flex-col gap-2 group">
             <div className="group-hover:translate-x-1 group-hover:-translate-y-1
             transition-all aspect-video rounded-lg flex cursor-pointer
-            items-center justify-center group-hover:shadow-md shadow-primary ease-in relative bg-gray-100"
+            items-center justify-center group-hover:shadow-md shadow-primary
+            ease-in relative bg-gray-100"
         >
                 <Image
                     src={snippet.thumbnails.medium.url}
