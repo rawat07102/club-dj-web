@@ -28,37 +28,15 @@ export async function createNewPlaylist(name: string, clubId: Club["id"]) {
     return playlist.id
 }
 
-export async function createPlaylist(formData: FormData) {
-    const name = formData.get("name")
-    const description = formData.get("description")
-    const clubId = formData.get("clubId")
-
-    if (!(name && description && formData.has("thumbnail"))) {
-        throw new Error("Please fill all inputs")
-    }
-
-    const res = await fetch(apiRoute(`/clubs/${clubId}/playlists`), {
-        method: "POST",
+export async function deletePlaylist(clubId: string, playlistId: string) {
+    await fetch(apiRoute(`/clubs/${clubId}/playlists/${playlistId}`), {
+        method: "DELETE",
         headers: {
             "Content-Type": "application/json",
             Authorization: extractAccessToken(await cookies()),
         },
-        body: JSON.stringify({
-            name,
-            description,
-        }),
     })
-
-    if (!res.ok) {
-        console.error(await res.json())
-        throw new Error(res.statusText)
-    }
-
-    const playlistId = await res.json()
-    await uploadPlaylistThumbnail(playlistId, formData)
-
     revalidateTag(`/clubs/${clubId}`)
-    return playlistId
 }
 
 export async function uploadPlaylistThumbnail(
@@ -74,7 +52,10 @@ export async function uploadPlaylistThumbnail(
     })
 }
 
-export async function addVideoToPlaylist(playlistId: string, formData: FormData) {
+export async function addVideoToPlaylist(
+    playlistId: string,
+    formData: FormData
+) {
     const videoId = formData.get("videoId")
     const res = await fetch(apiRoute(`/playlists/${playlistId}/list`), {
         method: "PUT",
@@ -95,14 +76,20 @@ export async function addVideoToPlaylist(playlistId: string, formData: FormData)
     revalidateTag(`/playlists/${playlistId}`)
 }
 
-export async function removeVideoFromPlaylist(playlistId: string, videoId: string) {
-    const res = await fetch(apiRoute(`/playlists/${playlistId}/list/${videoId}`), {
-        method: "DELETE",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: extractAccessToken(await cookies()),
-        },
-    })
+export async function removeVideoFromPlaylist(
+    playlistId: string,
+    videoId: string
+) {
+    const res = await fetch(
+        apiRoute(`/playlists/${playlistId}/list/${videoId}`),
+        {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: extractAccessToken(await cookies()),
+            },
+        }
+    )
 
     if (!res.ok) {
         console.log(await res.json())

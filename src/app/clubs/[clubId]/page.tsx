@@ -2,8 +2,10 @@ import { fetchClubById, isClubCreator } from "@/actions/clubs"
 import Image from "next/image"
 import Link from "next/link"
 import CreatePlaylist from "./playlists/[playlistId]/create-playlist"
-import EditableHeader from "./edit-club-details-dialog"
+import EditableHeader from "./editable-header"
 import ClubHeader from "./club-header"
+import { Trash } from "lucide-react"
+import DeletePlaylist from "./delete-playlist"
 
 type Props = {
     params: Promise<{
@@ -50,10 +52,12 @@ export default async function ClubPage(props: Props) {
                                     playlist.id,
                                     playlist.list
                                 )}
-                                className="aspect-video rounded-lg flex
+                                className="aspect-video rounded flex
                                 cursor-pointer items-center justify-center
-                                hover:shadow-primary/20 hover:shadow ease-in
-                                transition-shadow relative bg-gray-100"
+                                hover:shadow-primary/20 hover:shadow-md ease-in
+                                transition-all relative bg-gray-100
+                                hover:translate-x-1
+                                hover:-translate-y-1 "
                             >
                                 {playlist.thumbnail ? (
                                     <Image
@@ -73,19 +77,27 @@ export default async function ClubPage(props: Props) {
                                     </div>
                                 )}
                             </Link>
-                            <div>
-                                <Link
-                                    key={playlist.id}
-                                    href={`${clubId}/playlists/${playlist.id}`}
-                                    className="hover:underline"
-                                >
-                                    <h3 className="font-medium">
-                                        {playlist.name}
-                                    </h3>
-                                </Link>
-                                <p className="text-sm text-muted-foreground">
-                                    {playlist.list?.length ?? 0} videos
-                                </p>
+                            <div className="flex justify-between px-1">
+                                <div>
+                                    <Link
+                                        key={playlist.id}
+                                        href={`${clubId}/playlists/${playlist.id}`}
+                                        className="hover:underline"
+                                    >
+                                        <h3 className="font-medium">
+                                            {playlist.name}
+                                        </h3>
+                                    </Link>
+                                    <p className="text-sm text-muted-foreground">
+                                        {playlist.list?.length ?? 0} videos
+                                    </p>
+                                </div>
+                                <div>
+                                    <DeletePlaylist
+                                        clubId={clubId}
+                                        playlist={playlist}
+                                    />
+                                </div>
                             </div>
                         </div>
                     ))}
