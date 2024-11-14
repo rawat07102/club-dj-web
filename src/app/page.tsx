@@ -1,12 +1,11 @@
 import SearchClubsForm from "@/components/shared/SearchClubsForm"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Music, Users, Headphones, ArrowRight } from "lucide-react"
 import Link from "next/link"
 
 export default function LandingPage() {
     return (
-        <div className="min-h-screen bg-gradient-to-b from-blue-100 to-white">
+        <div className="min-h-screen bg-gradient-to-b w-full from-blue-100 to-white">
             <header className="bg-white shadow-sm">
                 <div className="container mx-auto px-4 py-6 flex justify-between items-center">
                     <div className="flex items-center space-x-2">

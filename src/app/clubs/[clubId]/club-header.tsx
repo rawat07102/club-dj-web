@@ -27,12 +27,16 @@ export default function ClubHeader({ club, className, ...restProps }: Props) {
                             src={club.thumbnail}
                             alt={club.name}
                             quality={50}
+                            className="object-cover"
                             fill
                         />
                     )}
                 </div>
                 <div className="flex flex-col gap-2 overflow-hidden">
-                    <h1 className="text-7xl font-bold capitalize">
+                    <h1
+                        className="text-7xl font-bold capitalize text-ellipsis
+                        overflow-hidden"
+                    >
                         {club.name}
                     </h1>
                     <p
@@ -70,17 +74,16 @@ export default function ClubHeader({ club, className, ...restProps }: Props) {
                             </strong>
                         </div>
                     </div>
+                    <div className="flex mt-2 flex-wrap gap-2">
+                        {club.genres.map((genre) => (
+                            <Badge key={genre.id} variant="secondary">
+                                {genre.name}
+                            </Badge>
+                        ))}
+                    </div>
                 </div>
             </div>
-            <div className="flex flex-col gap-2">
-                <div className="flex flex-wrap gap-2">
-                    {club.genres.map((genre) => (
-                        <Badge key={genre.id} variant="secondary">
-                            {genre.name}
-                        </Badge>
-                    ))}
-                </div>
-            </div>
+            <div className="flex flex-col gap-2"></div>
         </div>
     )
 }
