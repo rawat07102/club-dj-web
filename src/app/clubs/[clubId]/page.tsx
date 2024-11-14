@@ -5,7 +5,6 @@ import CreatePlaylist from "./playlists/[playlistId]/create-playlist"
 import EditableHeader from "./editable-header"
 import ClubHeader from "./club-header"
 import DeletePlaylist from "./delete-playlist"
-import AppSidebar from "@/components/shared/app-sidebar/app-sidebar"
 
 type Props = {
     params: Promise<{
@@ -21,8 +20,7 @@ export default async function ClubPage(props: Props) {
     const club = await fetchClubById(clubId)
     const allowEdit = await isClubCreator(club.creatorId)
     return (
-        <div className="flex w-full gap-8">
-            <AppSidebar />
+        <div className="flex w-full gap-8 ml-8">
             <div className="flex flex-1 flex-col gap-8 pt-8">
                 {allowEdit ? (
                     <EditableHeader club={club} />

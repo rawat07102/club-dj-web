@@ -5,7 +5,6 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
 import { socket } from "@/lib/utils"
 import { Send } from "lucide-react"
 import React from "react"
@@ -68,12 +67,8 @@ export default function Chat({ clubId }: Props) {
     }, [chatMessages])
 
     return (
-        <div className="relative flex flex-col justify-end w-full h-screen py-8">
-            <div className="absolute flex-col top-0 p-2 z-50 gap-2 w-full bg-background flex justify-center items-center">
-                <h1 className="text-lg">Chat</h1>
-                <Separator />
-            </div>
-            <ScrollArea className="flex flex-col-reverse">
+        <div className="relative flex flex-col justify-end w-full h-screen ">
+            <ScrollArea className="flex flex-col-reverse mt-2">
                 <div
                     className="flex flex-col px-2"
                     style={{
@@ -112,7 +107,7 @@ export default function Chat({ clubId }: Props) {
                     ref={scrollAnchorRef}
                 ></div>
             </ScrollArea>
-            <form className="flex z-50 space-x-2 w-[90%] mx-auto">
+            <form className="flex z-50 space-x-2 w-[90%] mx-auto pb-2">
                 <Input
                     placeholder="Type your message..."
                     className="flex-grow"

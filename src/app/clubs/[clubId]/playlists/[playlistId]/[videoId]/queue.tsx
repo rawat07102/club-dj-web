@@ -9,8 +9,8 @@ type Props = {
 
 export default function Queue({ queue, videoId }: Props) {
     return (
-        <ScrollArea className="w-full">
-            <div className="flex flex-col gap-2 py-2">
+        <ScrollArea className="w-full h-screen">
+            <div className="flex flex-col mt-10 gap-2 py-2">
                 {queue && queue.map((id) => (
                     <QueueCard
                         key={id}
