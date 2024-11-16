@@ -5,12 +5,15 @@ import {
     Sidebar,
     SidebarContent,
     SidebarGroup,
+    SidebarGroupAction,
+    SidebarGroupContent,
     SidebarGroupLabel,
     SidebarHeader,
 } from "@/components/ui/sidebar"
 import AppSidebarTrigger from "./app-sidebar-trigger"
 import Link from "next/link"
 import { getUser } from "@/actions/dashboard"
+import CreateClub from "../create-club"
 
 export default async function AppSidebar() {
     const user = await getUser()
@@ -39,30 +42,31 @@ export default async function AppSidebar() {
                     >
                         <Library />
                         Your Library
+                        <CreateClub className="ml-auto"/>
                     </SidebarGroupLabel>
-                    <SidebarContent
+                    <SidebarGroupContent
                         className="flex pl-1 flex-col gap-2
-                        overflow-hidden"
+                    overflow-hidden"
                     >
                         {user.clubs.map((club) => (
                             <div key={club.id}>
                                 <Link
                                     href={`/clubs/${club.id}`}
                                     className="relative flex min-w-max gap-1
-                                    items-center w-full justify-start
-                                    transition-colors group/item p-1"
+                                items-center w-full justify-start
+                                transition-colors group/item p-1"
                                 >
                                     <div
                                         className="absolute border w-full
-                                        h-full bg-primary opacity-0
-                                        pointer-events-none
-                                        group-hover/item:opacity-20 z-50
-                                        top-0 left-0 rounded transition ease-in"
+                                    h-full bg-primary opacity-0
+                                    pointer-events-none
+                                    group-hover/item:opacity-20 z-50
+                                    top-0 left-0 rounded transition ease-in"
                                     ></div>
                                     <div
                                         className="relative aspect-square w-10
-                                        rounded flex items-center
-                                        justify-center overflow-hidden"
+                                    rounded flex items-center
+                                    justify-center overflow-hidden"
                                     >
                                         {club.thumbnail ? (
                                             <Image
@@ -77,9 +81,9 @@ export default async function AppSidebar() {
                                         ) : (
                                             <div
                                                 className="w-full h-full flex
-                                                items-center justify-center
-                                                text-secondary-foreground
-                                                bg-secondary"
+                                                    items-center justify-center
+                                                    text-secondary-foreground
+                                                    bg-secondary"
                                             >
                                                 {club.name[0].toUpperCase()}
                                             </div>
@@ -96,7 +100,7 @@ export default async function AppSidebar() {
                                 </Link>
                             </div>
                         ))}
-                    </SidebarContent>
+                    </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
         </Sidebar>

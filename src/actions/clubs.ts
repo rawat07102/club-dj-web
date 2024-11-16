@@ -5,6 +5,25 @@ import { apiRoute, extractAccessToken, getUserId } from "@/lib/utils"
 import { revalidateTag } from "next/cache"
 import { cookies } from "next/headers"
 
+export async function createClub() {
+    const res = await fetch(apiRoute("/clubs"), {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: extractAccessToken(await cookies()),
+        },
+    })
+
+    if (!res.ok) {
+        console.error(await res.json())
+        throw new Error(res.statusText)
+    }
+
+    const clubId = await res.json()
+    revalidateTag("myClubs")
+    return clubId
+}
+
 export async function fetchClubById(clubId: string): Promise<Club> {
     const res = await fetch(apiRoute(`/clubs/${clubId}`), {
         next: {
