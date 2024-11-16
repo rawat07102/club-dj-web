@@ -32,7 +32,7 @@ export function extractAccessToken(cookieStore: ReadonlyRequestCookies) {
 
 export function getUserId(cookieStore: ReadonlyRequestCookies) {
     if (!cookieStore.has("userId")) {
-        throw new Error("cookieStore does not have 'userId'")
+        return null
     }
     return cookieStore.get("userId")?.value
 }

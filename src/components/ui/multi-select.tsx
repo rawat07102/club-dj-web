@@ -47,8 +47,12 @@ const MultiSelect = React.forwardRef<HTMLInputElement, InputProps>(
         }
 
         return (
-            <div className="relative w-full justify-stretch flex flex-col gap-1">
-                <div className="flex flex-wrap gap-1 border border-input focus-within:ring-2 ring-offset-2 ring-ring rounded p-1">
+            <div className="relative w-full z-[999] justify-stretch flex flex-col gap-1">
+                <div
+                    onClick={() => inputRef.current?.focus()}
+                    className=" flex flex-col  border border-input focus-within:ring-2 ring-offset-2 ring-ring rounded p-1"
+                >
+                    <div className="flex flex-wrap gap-1">
                         {selectedOptions.map((opt) => (
                             <div
                                 key={opt.value}
@@ -61,30 +65,34 @@ const MultiSelect = React.forwardRef<HTMLInputElement, InputProps>(
                                 </button>
                             </div>
                         ))}
+                    </div>
                     <input
                         onChange={handleTextInput}
                         value={textInput}
-                        onClick={() => setShowOptions(true)}
+                        onFocus={() => setShowOptions(true)}
                         ref={inputRef}
-                        className="flex-1 outline-none"
+                        className="flex-1 outline-none pointer-events-none"
                     />
                 </div>
                 <Popover
                     open={showOptions}
                     onOpenChange={(open) => setShowOptions(open)}
                 >
-                    <Anchor></Anchor>
+                    <Anchor className="z-[999]"></Anchor>
                     <PopoverContent
                         onOpenAutoFocus={(e) => e.preventDefault()}
                         align="start"
-                        className="max-h-72 overflow-y-auto"
+                        className="max-h-72 z-[999] overflow-y-auto"
                     >
                         {fuzzyOptions.length > 0 ? (
                             fuzzyOptions.map((opt) => (
                                 <div
                                     key={opt.value}
                                     className="hover:bg-accent hover:text-accent-foreground py-1 px-2 cursor-default rounded-sm"
-                                    onClick={() => handleSelect(opt)}
+                                    onClick={() => {
+                                        handleSelect(opt)
+                                        setTextInput("")
+                                    }}
                                 >
                                     {opt.label}
                                 </div>

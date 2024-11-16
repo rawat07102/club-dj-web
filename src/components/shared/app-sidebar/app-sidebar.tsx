@@ -5,7 +5,6 @@ import {
     Sidebar,
     SidebarContent,
     SidebarGroup,
-    SidebarGroupAction,
     SidebarGroupContent,
     SidebarGroupLabel,
     SidebarHeader,
@@ -14,6 +13,7 @@ import AppSidebarTrigger from "./app-sidebar-trigger"
 import Link from "next/link"
 import { getUser } from "@/actions/dashboard"
 import CreateClub from "../create-club"
+import DeleteClub from "@/app/clubs/[clubId]/delete-club"
 
 export default async function AppSidebar() {
     const user = await getUser()
@@ -42,31 +42,31 @@ export default async function AppSidebar() {
                     >
                         <Library />
                         Your Library
-                        <CreateClub className="ml-auto"/>
+                        <CreateClub className="ml-auto" />
                     </SidebarGroupLabel>
                     <SidebarGroupContent
                         className="flex pl-1 flex-col gap-2
                     overflow-hidden"
                     >
                         {user.clubs.map((club) => (
-                            <div key={club.id}>
+                            <div className="flex" key={club.id}>
                                 <Link
                                     href={`/clubs/${club.id}`}
                                     className="relative flex min-w-max gap-1
-                                items-center w-full justify-start
-                                transition-colors group/item p-1"
+                                    items-center w-full justify-start
+                                    transition-colors group/item p-1"
                                 >
                                     <div
                                         className="absolute border w-full
-                                    h-full bg-primary opacity-0
-                                    pointer-events-none
-                                    group-hover/item:opacity-20 z-50
-                                    top-0 left-0 rounded transition ease-in"
+                                        h-full bg-primary opacity-0
+                                        pointer-events-none
+                                        group-hover/item:opacity-20 z-50
+                                        top-0 left-0 rounded transition ease-in"
                                     ></div>
                                     <div
                                         className="relative aspect-square w-10
-                                    rounded flex items-center
-                                    justify-center overflow-hidden"
+                                        rounded flex items-center
+                                        justify-center overflow-hidden"
                                     >
                                         {club.thumbnail ? (
                                             <Image
@@ -98,6 +98,9 @@ export default async function AppSidebar() {
                                         </p>
                                     </div>
                                 </Link>
+                                <div className="flex ml-auto items-center">
+                                    <DeleteClub />
+                                </div>
                             </div>
                         ))}
                     </SidebarGroupContent>
@@ -106,56 +109,3 @@ export default async function AppSidebar() {
         </Sidebar>
     )
 }
-
-//<Tabs defaultValue="followed" className="w-full">
-//    <TabsList className="grid w-full grid-cols-2 mb-4">
-//        <TabsTrigger value="followed">Followed</TabsTrigger>
-//        <TabsTrigger value="my-content">My Content</TabsTrigger>
-//    </TabsList>
-//    <TabsContent value="followed">
-//        <div className="space-y-6">
-//            <div>
-//                <h3 className="font-semibold mb-3 text-sm text-gray-500 uppercase tracking-wider">
-//                    Clubs
-//                </h3>
-//                <MediaList></MediaList>
-//            </div>
-//        </div>
-//    </TabsContent>
-//    <TabsContent value="my-content">
-//        <div className="space-y-6">
-//            <div>
-//                <h3 className="font-semibold mb-3 text-sm text-gray-500 uppercase tracking-wider">
-//                    My Clubs
-//                </h3>
-//                <ul className="space-y-2">
-//                    {user.clubs.map((club) => (
-//                        <li key={club.id}>
-//                            <Button
-//                                variant="ghost"
-//                                className="w-full justify-start hover:bg-gray-100 transition-colors"
-//                            >
-//                                <div className="w-10 h-10 rounded-md mr-3 flex items-center justify-center overflow-hidden">
-//                                    <img
-//                                        src={
-//                                            club.thumbnail ||
-//                                            "https://placehold.co/400"
-//                                        }
-//                                    />
-//                                </div>
-//                                <div className="text-left">
-//                                    <p className="font-medium text-sm">
-//                                        {club.name}
-//                                    </p>
-//                                    <p className="text-xs text-gray-500">
-//                                        {`${club.followersCount} followers`}
-//                                    </p>
-//                                </div>
-//                            </Button>
-//                        </li>
-//                    ))}
-//                </ul>
-//            </div>
-//        </div>
-//    </TabsContent>
-//</Tabs>

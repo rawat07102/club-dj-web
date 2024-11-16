@@ -6,16 +6,9 @@ import Link from "next/link"
 
 export default function SignupPage() {
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="min-h-screen flex items-center justify-center">
             <div className="bg-white p-8 rounded-lg shadow-md w-96">
                 <h1 className="text-2xl font-bold mb-6 text-center">Sign Up</h1>
-                {/*error && (
-                    <Alert variant="destructive" className="mb-6">
-                        <AlertCircle className="h-4 w-4" />
-                        <AlertTitle>Error</AlertTitle>
-                        <AlertDescription>{error}</AlertDescription>
-                    </Alert>
-                )*/}
                 <form action={signup} className="space-y-4">
                     <div className="space-y-2">
                         <Label htmlFor="username">Username</Label>

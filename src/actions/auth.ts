@@ -16,7 +16,14 @@ export async function login(formData: FormData) {
             "Content-Type": "application/json",
         },
     })
-    const { accessToken, payload } = await res.json()
+    const body = await res.json()
+
+    if (!res.ok) {
+        console.error(body)
+        throw new Error(res.statusText)
+    }
+
+    const { accessToken, payload } = body
     const cookieStore = await cookies()
 
     cookieStore.set("accessToken", accessToken, {
@@ -30,7 +37,7 @@ export async function login(formData: FormData) {
     cookieStore.set("userId", payload.id, {
         maxAge: 60 * 60 * 24 * 7, // a week
     })
-    redirect("/dashboard")
+    redirect("/")
 }
 
 export async function signup(formData: FormData) {
@@ -46,6 +53,7 @@ export async function signup(formData: FormData) {
             "Content-Type": "application/json",
         },
     })
+    redirect("/auth/login")
 }
 
 export async function logout() {

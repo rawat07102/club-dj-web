@@ -92,3 +92,14 @@ export async function addVideoToQueue(clubId: number, formData: FormData) {
     }
     revalidateTag(`/clubs/${clubId}`)
 }
+
+export async function deleteClub(clubId: string) {
+    await fetch(apiRoute(`/clubs/${clubId}`), {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: extractAccessToken(await cookies()),
+        },
+    })
+    revalidateTag("/clubs")
+}
