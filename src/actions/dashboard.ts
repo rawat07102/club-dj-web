@@ -77,7 +77,7 @@ export async function getClubs(queryParams: QueryParams = {}): Promise<Club[]> {
     return clubs
 }
 
-export default async function editClub(formData: FormData) {
+export default async function updateClubDetails(formData: FormData) {
     const clubId = formData.get("clubId")
 
     if (!clubId) {
@@ -86,7 +86,7 @@ export default async function editClub(formData: FormData) {
 
     const name = formData.get("name")
     const description = formData.get("description")
-    //const genres = formData.getAll("genres")
+    const genres = formData.getAll("genres")
 
     const body: Record<string, any> = {}
     if (name) {
@@ -94,6 +94,9 @@ export default async function editClub(formData: FormData) {
     }
     if (description) {
         body["description"] = description
+    }
+    if (genres.length > 0) {
+        body["genreIds"] = genres
     }
     console.log(body)
 

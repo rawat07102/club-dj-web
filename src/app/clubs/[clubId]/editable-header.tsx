@@ -12,12 +12,11 @@ import { Textarea } from "@/components/ui/textarea"
 import { Club, Genre } from "@/lib/types"
 import React from "react"
 import { Button } from "@/components/ui/button"
-import editClub from "@/actions/dashboard"
+import updateClubDetails from "@/actions/dashboard"
 import ClubHeader from "./club-header"
 import { MultiSelect, MultiSelectOption } from "@/components/ui/multi-select"
 import useSWR from "swr"
-import { fetcher } from "@/lib/utils"
-import { Trash2 } from "lucide-react"
+import { fetcher, isArrayEqual } from "@/lib/utils"
 
 type Props = {
     club: Club
@@ -80,8 +79,22 @@ export default function EditableHeader({ club }: Props) {
             formData.append("thumbnail", imageFile)
             toEdit = true
         }
+        const multiSelectOptionGenres = genres
+            ? genres.map((o) => ({ label: o.name, value: o.id }))
+            : []
+        const updateGenre = !isArrayEqual<MultiSelectOption>(
+            multiSelectOptionGenres,
+            selectedGenres,
+            (a, b) => a.value === b.value
+        )
+        if (updateGenre) {
+            selectedGenres.forEach((o) => {
+                formData.append("genres", o.value.toString())
+            })
+            toEdit = true
+        }
         if (toEdit) {
-            await editClub(formData)
+            await updateClubDetails(formData)
         }
     }
 

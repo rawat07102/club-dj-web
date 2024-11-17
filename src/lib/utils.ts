@@ -17,8 +17,8 @@ export async function fetcher(path: string) {
         baseURL: process.env.NEXT_PUBLIC_BASE_API_URI,
         method: "GET",
         headers: {
-            "Content-Type": "application/json"
-        }
+            "Content-Type": "application/json",
+        },
     })
     return res.data
 }
@@ -45,9 +45,32 @@ export function getYoutubeVideoSrc(ids: string[]) {
     return src
 }
 
-export const socketUrl =
-    process.env.NEXT_PUBLIC_SOCKET_URI
+export const socketUrl = process.env.NEXT_PUBLIC_SOCKET_URI
 
 export const socket = io(socketUrl, {
     autoConnect: false,
 })
+
+export function isArrayEqual<T>(
+    array1: T[],
+    array2: T[],
+    compareFn: (a: T, b: T) => boolean
+) {
+    if (array1.length !== array2.length) {
+        return false
+    }
+
+    for (let i = 0; i < array1.length; i++) {
+        const item = array1[i]
+
+        for (let j = 0; j < array2.length; j++) {
+            if (compareFn(item, array2[j])) {
+                break
+            }
+            if (j === array2.length - 1) {
+                return false
+            }
+        }
+    }
+    return true
+}
