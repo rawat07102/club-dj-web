@@ -3,29 +3,30 @@ import { getYoutubeVideoSrc } from "@/lib/utils"
 import Script from "next/script"
 import React from "react"
 import { YT_PLAYER_STATE } from "@/lib/types/ytIframe.types"
-import { useRouter, useSearchParams } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 
-const queue = ["qR2QIJdtgiU", "NLi2v-Gq-5A"]
+type Props = {
+    queue: string[]
+    videoId: string
+}
 
-export default function Test() {
-    const searchParams = useSearchParams()
+export default function IframePlayer({ queue, videoId }: Props) {
     const router = useRouter()
-    const currentlyPlaying = searchParams.get("currentlyPlaying") || queue[0]
-    const currentPlayingIndex = React.useMemo(() => {
-        return queue.findIndex((id) => id === currentlyPlaying)
-    }, [currentlyPlaying])
+
+    const videoIndexInQueue = React.useMemo(() => {
+        return queue.findIndex((id) => id === videoId)
+    }, [videoId])
+
+    const currentPath = usePathname()
 
     return (
-        <div
-            className="flex gap-2 bg-secondary mx-auto aspect-video
-            max-w-screen-sm border w-full"
-        >
-            {currentlyPlaying && (
+        <div className="w-full h-full">
+            {videoId && (
                 <>
                     <iframe
                         id="player"
                         className="flex-1 h-full w-full"
-                        src={getYoutubeVideoSrc(currentlyPlaying, [])}
+                        src={getYoutubeVideoSrc(videoId, [])}
                         allow="accelerometer; clipboard-write; encrypted-media;
                         gyroscope; picture-in-picture; web-share"
                     ></iframe>
@@ -38,17 +39,20 @@ export default function Test() {
                                 window.player = new window.YT.Player("player", {
                                     events: {
                                         onReady: () => {
-                                            console.log("YT ready")
+                                            console.log("YT ready!!!")
                                             console.log(window.player)
                                         },
                                         onStateChange: (state) => {
+                                            console.log(state.data)
                                             if (
                                                 state.data ===
                                                 YT_PLAYER_STATE.ENDED
                                             ) {
-                                                router.push(
-                                                    `/test?currentlyPlaying=
-                                            ${queue[currentPlayingIndex + 1]}`
+                                                console.log(
+                                                    queue[videoIndexInQueue + 1]
+                                                )
+                                                router.replace(
+                                                    `${currentPath}/${queue[videoIndexInQueue + 1]}`
                                                 )
                                             }
                                         },

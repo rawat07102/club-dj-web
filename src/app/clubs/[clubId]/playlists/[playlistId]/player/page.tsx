@@ -1,43 +1,36 @@
-import { fetchPlaylistById } from "@/actions/clubs"
+import { fetchPlaylistById } from "@/actions/clubs";
+import IframePlayer from "./i-frame-player";
+import { redirect } from "next/navigation";
+import Chat from "./chat"
+import Queue from "./queue"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import IframePlayer from "../player/i-frame-player"
-import Chat from "../player/chat"
-import Queue from "../player/queue"
 
 type Props = {
     params: Promise<{
+        playlistId: string;
         clubId: string
-        playlistId: string
-        videoId: string
+    }>
+    searchParams: Promise<{
+        videoId?: string
     }>
 }
 
-function getQueueForIframe(current: string, list?: string[]) {
-    if (!list) {
-        return []
-    }
-
-    const index = list.findIndex((id) => id === current)
-
-    if (index === -1) {
-        return []
-    }
-
-    return list.slice(index)
-}
-
-export default async function VideoPage(props: Props) {
+export default async function PlaylistPlayer(props: Props) {
     const params = await props.params
-
-    const { clubId, playlistId, videoId } = params
-
+    const searchParams = await props.searchParams
+    const { playlistId, clubId } = params
     const playlist = await fetchPlaylistById(playlistId)
-    const queue = getQueueForIframe(videoId, playlist.list)
+
+    if (!playlist.list) {
+        redirect(`/clubs/${clubId}/playlists/${playlistId}`)
+    }
+
+    const videoId = searchParams.videoId ?? playlist.list[0]
 
     return (
         <main className="w-full flex">
             <div className="h-screen flex-1">
-                <IframePlayer videoId={videoId} queue={queue} />
+                <IframePlayer videoId={videoId} queue={playlist.list} />
             </div>
             <div className="w-full max-w-sm">
                 <Tabs defaultValue="chat" className="relative">
@@ -53,7 +46,7 @@ export default async function VideoPage(props: Props) {
                         <Chat clubId={clubId} />
                     </TabsContent>
                     <TabsContent value="queue" className="mt-0">
-                        <Queue videoId={videoId} queue={playlist.list!} />
+                        <Queue videoId={videoId} queue={playlist.list} />
                     </TabsContent>
                 </Tabs>
             </div>

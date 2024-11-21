@@ -1,3 +1,16 @@
+import { Player, PlayerConstructor, YT_PLAYER_STATE } from "./ytIframe.types"
+
+declare global {
+    interface Window {
+        player: Player
+        YT: {
+            Player: PlayerConstructor
+            PlayerState: YT_PLAYER_STATE
+        }
+        onYouTubeIframeAPIReady: () => void
+    }
+}
+
 interface BaseEntity {
     id: string
     created: Date

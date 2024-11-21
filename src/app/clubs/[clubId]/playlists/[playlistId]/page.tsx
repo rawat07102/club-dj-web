@@ -1,25 +1,21 @@
 import Image from "next/image"
-import { fetchClubById, fetchPlaylistById, isClubCreator } from "@/actions/clubs"
+import { fetchPlaylistById } from "@/actions/clubs"
 import { Calendar, Clock } from "lucide-react"
 import AddVideo from "./add-video"
 import Link from "next/link"
 import VideoCard from "./VideoCard"
-import { getUser } from "@/actions/dashboard"
 
 type Props = {
     params: Promise<{
-        playlistId: string,
+        playlistId: string
         clubId: string
     }>
 }
 
 export default async function PlaylistPage(props: Props) {
-    const params = await props.params;
+    const params = await props.params
 
-    const {
-        playlistId,
-        clubId
-    } = params;
+    const { playlistId } = params
 
     const playlist = await fetchPlaylistById(playlistId)
 
@@ -29,11 +25,13 @@ export default async function PlaylistPage(props: Props) {
     )
 
     return (
-        <div className="flex flex-col gap-8 p-8">
+        <div className="flex flex-1 flex-col gap-8 ml-4 mt-4">
             <div className="flex flex-col gap-2">
                 <div className="flex flex-row items-center gap-2">
-                    <div className="relative h-24 w-24 bg-secondary rounded-lg
-                    overflow-hidden">
+                    <div
+                        className="relative h-24 w-24 bg-secondary rounded-lg
+                    overflow-hidden"
+                    >
                         {playlist.thumbnail && (
                             <Image
                                 src={playlist.thumbnail}
@@ -70,10 +68,15 @@ export default async function PlaylistPage(props: Props) {
                         <AddVideo playlistId={playlistId} />
                     </div>
                 </div>
-                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2
-                    md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+                <div
+                    className="grid gap-4 grid-cols-1 sm:grid-cols-2
+                    md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6"
+                >
                     {playlist.list?.map((videoId) => (
-                        <Link key={videoId} href={`${playlistId}/${videoId}`}>
+                        <Link
+                            key={videoId}
+                            href={`${playlistId}/player?currentlyPlaying=${videoId}`}
+                        >
                             <VideoCard videoId={videoId} />
                         </Link>
                     ))}

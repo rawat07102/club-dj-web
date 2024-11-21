@@ -37,10 +37,10 @@ export function getUserId(cookieStore: ReadonlyRequestCookies) {
     return cookieStore.get("userId")?.value
 }
 
-export function getYoutubeVideoSrc(ids: string[]) {
-    let src = `https://www.youtube.com/embed/${ids[0]}?&autoplay=1&controls=1&disablekb=0&iv_load_policy=3`
-    if (ids.length > 1) {
-        src = src + `&playlist=${ids.slice(1).join(",")}`
+export function getYoutubeVideoSrc(videoId: string, queue: string[]) {
+    let src = `https://www.youtube.com/embed/${videoId}?&autoplay=1&controls=1&disablekb=0&iv_load_policy=3&enablejsapi=1&mute=1&rel=0`
+    if (queue.length > 0) {
+        src = src + `&playlist=${queue.join(",")}`
     }
     return src
 }

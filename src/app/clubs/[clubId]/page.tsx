@@ -20,8 +20,8 @@ export default async function ClubPage(props: Props) {
     const club = await fetchClubById(clubId)
     const allowEdit = await isClubCreator(club.creatorId)
     return (
-        <div className="flex w-full gap-8">
-            <div className="flex flex-1 flex-col gap-8 pt-8">
+        <div className="flex flex-1 gap-8 ml-4 mt-4">
+            <div className="flex flex-1 flex-col gap-8">
                 {allowEdit ? (
                     <EditableHeader club={club} />
                 ) : (
