@@ -17,15 +17,15 @@ export async function createNewPlaylist(name: string, clubId: Club["id"]) {
         }),
     })
 
+    const body = await res.json()
+
     if (!res.ok) {
-        console.error(await res.json())
+        console.error(body)
         throw new Error(res.statusText)
     }
 
-    const playlist = await res.json()
-
     revalidatePath(`/dashboard/clubs/${clubId}`)
-    return playlist.id
+    return body
 }
 
 export async function deletePlaylist(clubId: string, playlistId: string) {

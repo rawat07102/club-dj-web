@@ -10,7 +10,10 @@ export interface Player {
     ): void
     loadPlaylist(loadPlaylistOptions: LoadPlaylistOptions): void
     unMute(): void
+    loadVideoById(id: string): void
     playVideo(): void
+    getVideoUrl(): void
+    getPlaylistIndex(): void
 }
 
 export interface LoadPlaylistOptions {
@@ -22,15 +25,17 @@ export interface LoadPlaylistOptions {
 
 export interface PlayerOptions {
     videoId?: string
+    height?: number
+    width?: number
     events?: PlayerEvents
     playerVars?: PlayerParameters
 }
 
 export interface PlayerParameters {
-    autoplay?: 0 | 1;
-    controls?: 0 | 1;
-    disablekb?: 0 | 1;
-    iv_load_policy?: 1 | 3;
+    autoplay?: 0 | 1
+    controls?: 0 | 1
+    disablekb?: 0 | 1
+    iv_load_policy?: 1 | 3
 }
 
 export interface PlayerEvents {

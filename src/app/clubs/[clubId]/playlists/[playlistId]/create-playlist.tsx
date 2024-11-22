@@ -15,7 +15,10 @@ export default function CreatePlaylist({ playlistCount, clubId }: Props) {
     const router = useRouter()
 
     async function handleCreatePlaylist() {
-        const playlistId = await createNewPlaylist(`Playlist #${playlistCount + 1}`, clubId)
+        const playlistId = await createNewPlaylist(
+            `Playlist #${playlistCount + 1}`,
+            clubId
+        )
         router.push(`${clubId}/playlists/${playlistId}`)
     }
 

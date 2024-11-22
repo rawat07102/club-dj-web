@@ -1,63 +1,63 @@
-"use client"
 import { getYoutubeVideoSrc } from "@/lib/utils"
 import Script from "next/script"
 import React from "react"
 import { YT_PLAYER_STATE } from "@/lib/types/ytIframe.types"
-import { usePathname, useRouter } from "next/navigation"
-
 type Props = {
     queue: string[]
-    videoId: string
+    startingVideo: string
+    currentVideo: string
+    onNewVideo: (id: string) => void
 }
 
-export default function IframePlayer({ queue, videoId }: Props) {
-    const router = useRouter()
-
-    const videoIndexInQueue = React.useMemo(() => {
-        return queue.findIndex((id) => id === videoId)
-    }, [videoId])
-
-    const currentPath = usePathname()
-
+export default function IframePlayer({
+    queue,
+    startingVideo,
+    currentVideo,
+    onNewVideo,
+}: Props) {
     return (
         <div className="w-full h-full">
-            {videoId && (
+            {currentVideo && (
                 <>
                     <iframe
-                        id="player"
+                        id="yt-playlist-player"
                         className="flex-1 h-full w-full"
-                        src={getYoutubeVideoSrc(videoId, [])}
+                        src={getYoutubeVideoSrc(startingVideo, [])}
                         allow="accelerometer; clipboard-write; encrypted-media;
                         gyroscope; picture-in-picture; web-share"
                     ></iframe>
 
                     <Script
                         src="https://www.youtube.com/iframe_api"
-                        async
                         onReady={() => {
                             window.onYouTubeIframeAPIReady = () => {
-                                window.player = new window.YT.Player("player", {
-                                    events: {
-                                        onReady: () => {
-                                            console.log("YT ready!!!")
-                                            console.log(window.player)
+                                window.player = new window.YT.Player(
+                                    "yt-playlist-player",
+                                    {
+                                        events: {
+                                            onReady: () => {
+                                                console.log(window.player)
+                                            },
+                                            onStateChange: (state) => {
+                                                if (
+                                                    state.data ===
+                                                    YT_PLAYER_STATE.ENDED
+                                                ) {
+                                                    const currentIndex =
+                                                        window.currentIndex
+                                                    const newVideo =
+                                                        queue[currentIndex + 1]
+                                                    if (newVideo) {
+                                                        window.player.loadVideoById(
+                                                            newVideo
+                                                        )
+                                                        onNewVideo(newVideo)
+                                                    }
+                                                }
+                                            },
                                         },
-                                        onStateChange: (state) => {
-                                            console.log(state.data)
-                                            if (
-                                                state.data ===
-                                                YT_PLAYER_STATE.ENDED
-                                            ) {
-                                                console.log(
-                                                    queue[videoIndexInQueue + 1]
-                                                )
-                                                router.replace(
-                                                    `${currentPath}/${queue[videoIndexInQueue + 1]}`
-                                                )
-                                            }
-                                        },
-                                    },
-                                })
+                                    }
+                                )
                             }
                         }}
                     ></Script>

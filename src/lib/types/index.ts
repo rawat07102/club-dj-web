@@ -8,7 +8,18 @@ declare global {
             PlayerState: YT_PLAYER_STATE
         }
         onYouTubeIframeAPIReady: () => void
+        currentIndex: number
     }
+}
+
+export interface YTVideo {
+    thumbnails: {
+        medium: {
+            url: string
+        }
+    }
+    title: string
+    channelTitle: string
 }
 
 interface BaseEntity {

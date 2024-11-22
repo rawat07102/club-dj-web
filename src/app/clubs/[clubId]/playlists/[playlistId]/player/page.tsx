@@ -1,36 +1,63 @@
-import { fetchPlaylistById } from "@/actions/clubs";
-import IframePlayer from "./i-frame-player";
-import { redirect } from "next/navigation";
+"use client"
+import { fetchPlaylistById } from "@/actions/clubs"
+import IframePlayer from "./i-frame-player"
+import { redirect } from "next/navigation"
 import Chat from "./chat"
 import Queue from "./queue"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import useSWR from "swr"
+import React from "react"
 
 type Props = {
     params: Promise<{
-        playlistId: string;
+        playlistId: string
         clubId: string
     }>
     searchParams: Promise<{
-        videoId?: string
+        startingVideo?: string
     }>
 }
 
-export default async function PlaylistPlayer(props: Props) {
-    const params = await props.params
-    const searchParams = await props.searchParams
+export default function PlaylistPlayer(props: Props) {
+    const params = React.use(props.params)
+    const searchParams = React.use(props.searchParams)
     const { playlistId, clubId } = params
-    const playlist = await fetchPlaylistById(playlistId)
+    const {
+        data: playlist,
+        isLoading,
+        error,
+    } = useSWR(playlistId, fetchPlaylistById)
+    const startingVideo =
+        searchParams.startingVideo ||
+        (playlist && playlist.list ? playlist.list[0] : "")
+    const [currentVideo, setCurrentVideo] = React.useState(startingVideo)
 
-    if (!playlist.list) {
-        redirect(`/clubs/${clubId}/playlists/${playlistId}`)
+    React.useEffect(() => {
+        window.currentIndex =
+            playlist?.list?.findIndex((id) => id === currentVideo) ?? 0
+    }, [currentVideo])
+
+    if (isLoading) {
+        return <div>loading...</div>
     }
 
-    const videoId = searchParams.videoId ?? playlist.list[0]
+    if (error) {
+        return <div>{error}</div>
+    }
+
+    if (!playlist || !playlist.list) {
+        return redirect(`/clubs/${clubId}`)
+    }
 
     return (
         <main className="w-full flex">
             <div className="h-screen flex-1">
-                <IframePlayer videoId={videoId} queue={playlist.list} />
+                <IframePlayer
+                    currentVideo={currentVideo}
+                    onNewVideo={(id) => setCurrentVideo(id)}
+                    startingVideo={startingVideo || playlist.list[0]}
+                    queue={playlist.list}
+                />
             </div>
             <div className="w-full max-w-sm">
                 <Tabs defaultValue="chat" className="relative">
@@ -46,7 +73,11 @@ export default async function PlaylistPlayer(props: Props) {
                         <Chat clubId={clubId} />
                     </TabsContent>
                     <TabsContent value="queue" className="mt-0">
-                        <Queue videoId={videoId} queue={playlist.list} />
+                        <Queue
+                            videoId={currentVideo}
+                            queue={playlist.list}
+                            onNewVideo={(id) => setCurrentVideo(id)}
+                        />
                     </TabsContent>
                 </Tabs>
             </div>

@@ -45,14 +45,23 @@ export async function signup(formData: FormData) {
         username: formData.get("username"),
         password: formData.get("password"),
     }
+    console.log(reqBody)
 
-    await fetch(apiRoute("/users"), {
+    const res = await fetch(apiRoute("/users"), {
         method: "POST",
         body: JSON.stringify(reqBody),
         headers: {
             "Content-Type": "application/json",
         },
     })
+
+    const body = await res.json()
+
+    if (!res.ok) {
+        console.error(body)
+        throw new Error(res.statusText)
+    }
+
     redirect("/auth/login")
 }
 
@@ -68,5 +77,4 @@ export async function getAuthToken() {
         throw new Error("No accessToken found in cookies")
     }
     return accessToken
-
 }

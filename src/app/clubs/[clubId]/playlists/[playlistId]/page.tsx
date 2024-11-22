@@ -75,7 +75,7 @@ export default async function PlaylistPage(props: Props) {
                     {playlist.list?.map((videoId) => (
                         <Link
                             key={videoId}
-                            href={`${playlistId}/player?currentlyPlaying=${videoId}`}
+                            href={`${playlistId}/player?startingVideo=${videoId}`}
                         >
                             <VideoCard videoId={videoId} />
                         </Link>

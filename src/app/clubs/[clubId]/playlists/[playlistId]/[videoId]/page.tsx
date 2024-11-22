@@ -37,7 +37,7 @@ export default async function VideoPage(props: Props) {
     return (
         <main className="w-full flex">
             <div className="h-screen flex-1">
-                <IframePlayer videoId={videoId} queue={queue} />
+                <IframePlayer startingVideo={videoId} queue={queue} />
             </div>
             <div className="w-full max-w-sm">
                 <Tabs defaultValue="chat" className="relative">

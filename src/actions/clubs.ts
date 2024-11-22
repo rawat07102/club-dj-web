@@ -1,6 +1,6 @@
 "use server"
 
-import { Club, Playlist } from "@/lib/types"
+import { Club, Playlist, YTVideo } from "@/lib/types"
 import { apiRoute, extractAccessToken, getUserId } from "@/lib/utils"
 import { revalidateTag } from "next/cache"
 import { cookies } from "next/headers"
@@ -57,7 +57,7 @@ export async function isClubCreator(creatorId: string) {
     return userId == creatorId
 }
 
-export async function getVideoById(id: string) {
+export async function getVideoById(id: string): Promise<YTVideo> {
     const res = await fetch(apiRoute(`/youtube/videos/${id}`), {
         method: "GET",
         headers: {
@@ -70,7 +70,7 @@ export async function getVideoById(id: string) {
         throw "Error while fetching: getVideoById"
     }
 
-    return body.items[0]
+    return body.items[0].snippet
 }
 
 export async function addVideoToQueue(clubId: number, formData: FormData) {

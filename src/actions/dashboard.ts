@@ -54,6 +54,11 @@ export async function getUser(id?: string): Promise<User> {
     const userId = id || getUserId(await cookies())
     const res = await fetch(apiRoute(`/users/${userId}`))
 
+    if (!res.ok) {
+        console.log(await res.json())
+        throw new Error()
+    }
+
     const user = await res.json()
     return user
 }

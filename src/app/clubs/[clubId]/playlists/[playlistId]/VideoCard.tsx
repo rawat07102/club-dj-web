@@ -7,7 +7,6 @@ type Props = {
 
 export default async function VideoCard({ videoId }: Props) {
     const video = await getVideoById(videoId)
-    const { snippet } = video
     return (
         <div className="rounded-lg flex flex-col gap-2 group">
             <div className="group-hover:translate-x-1 group-hover:-translate-y-1
@@ -16,15 +15,15 @@ export default async function VideoCard({ videoId }: Props) {
             ease-in relative bg-gray-100"
         >
                 <Image
-                    src={snippet.thumbnails.medium.url}
-                    alt={snippet.title}
+                    src={video.thumbnails.medium.url}
+                    alt={video.title}
                     quality={50}
                     fill
                 />
             </div>
             <div className="flex flex-col">
-                <h3 className="font-medium">{snippet.title}</h3>
-                <p className="text-sm text-muted-foreground">{snippet.channelTitle}</p>
+                <h3 className="font-medium">{video.title}</h3>
+                <p className="text-sm text-muted-foreground">{video.channelTitle}</p>
             </div>
         </div>
     )

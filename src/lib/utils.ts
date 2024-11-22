@@ -38,7 +38,7 @@ export function getUserId(cookieStore: ReadonlyRequestCookies) {
 }
 
 export function getYoutubeVideoSrc(videoId: string, queue: string[]) {
-    let src = `https://www.youtube.com/embed/${videoId}?&autoplay=1&controls=1&disablekb=0&iv_load_policy=3&enablejsapi=1&mute=1&rel=0`
+    let src = `https://www.youtube.com/embed/${videoId}?&autoplay=1&controls=1&disablekb=0&iv_load_policy=3&rel=0&enablejsapi=1&mute=1`
     if (queue.length > 0) {
         src = src + `&playlist=${queue.join(",")}`
     }
