@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { fetchPlaylistById } from "@/actions/clubs"
+import { fetchPlaylistById } from "@/actions/playlists"
 import { Calendar, Clock } from "lucide-react"
 import AddVideo from "./add-video"
 import Link from "next/link"

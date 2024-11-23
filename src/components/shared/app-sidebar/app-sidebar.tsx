@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/sidebar"
 import AppSidebarTrigger from "./app-sidebar-trigger"
 import Link from "next/link"
-import { getUser } from "@/actions/dashboard"
+import { getUser } from "@/actions/auth"
 import CreateClub from "../create-club"
 import DeleteClub from "@/app/clubs/[clubId]/delete-club"
 
@@ -26,7 +26,7 @@ export default async function AppSidebar() {
             <SidebarContent className="bg-background">
                 <SidebarHeader className="ml-2">
                     <Link
-                        href="/dashboard"
+                        href="/"
                         className="transition-colors ease-in bg-primary
                         [&>svg]:stroke-primary-foreground p-2 max-w-fit
                         rounded-full [&>svg]:hover:stroke-primary
@@ -46,7 +46,7 @@ export default async function AppSidebar() {
                     </SidebarGroupLabel>
                     <SidebarGroupContent
                         className="flex pl-1 flex-col gap-2
-                    overflow-hidden"
+                        overflow-hidden"
                     >
                         {user.clubs.map((club) => (
                             <div className="flex" key={club.id}>
@@ -99,7 +99,7 @@ export default async function AppSidebar() {
                                     </div>
                                 </Link>
                                 <div className="flex ml-auto items-center">
-                                    <DeleteClub />
+                                    <DeleteClub clubId={club.id} />
                                 </div>
                             </div>
                         ))}

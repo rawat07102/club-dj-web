@@ -1,7 +1,8 @@
 "use server"
 import { cookies } from "next/headers"
-import { apiRoute } from "@/lib/utils"
+import { apiRoute, getUserId } from "@/lib/utils"
 import { redirect } from "next/navigation"
+import { User } from "@/lib/types"
 
 export async function login(formData: FormData) {
     const reqBody = {
@@ -77,4 +78,17 @@ export async function getAuthToken() {
         throw new Error("No accessToken found in cookies")
     }
     return accessToken
+}
+
+export async function getUser(id?: string): Promise<User> {
+    const userId = id || getUserId(await cookies())
+    const res = await fetch(apiRoute(`/users/${userId}`))
+
+    if (!res.ok) {
+        console.log(await res.json())
+        throw new Error()
+    }
+
+    const user = await res.json()
+    return user
 }

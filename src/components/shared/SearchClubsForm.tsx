@@ -7,7 +7,7 @@ import React from "react"
 import { Popover, PopoverContent } from "../ui/popover"
 import { Anchor } from "@radix-ui/react-popover"
 import useSWRMutation from "swr/mutation"
-import { getClubs } from "@/actions/dashboard"
+import { getClubs } from "@/actions/clubs"
 import Link from "next/link"
 
 const DELAY = 500

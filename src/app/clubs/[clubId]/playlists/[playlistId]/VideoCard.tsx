@@ -1,4 +1,4 @@
-import { getVideoById } from "@/actions/clubs"
+import { getVideoById } from "@/actions/youtube"
 import Image from "next/image"
 
 type Props = {

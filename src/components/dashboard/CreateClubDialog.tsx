@@ -1,5 +1,5 @@
 "use client"
-import { createClub } from "@/actions/dashboard"
+import { createClub } from "@/actions/clubs"
 import { Button } from "@/components/ui/button"
 import {
     Dialog,

@@ -1,5 +1,5 @@
 "use client"
-import { fetchPlaylistById } from "@/actions/clubs"
+import { fetchPlaylistById } from "@/actions/playlists"
 import IframePlayer from "./i-frame-player"
 import { redirect } from "next/navigation"
 import Chat from "./chat"

@@ -98,3 +98,17 @@ export async function removeVideoFromPlaylist(
 
     revalidateTag(`/playlists/${playlistId}`)
 }
+
+export async function fetchPlaylistById(playlistId: string): Promise<Playlist> {
+    const res = await fetch(apiRoute(`/playlists/${playlistId}`), {
+        next: {
+            tags: [`/playlists/${playlistId}`],
+        },
+    })
+    const body = await res.json()
+    if (!res.ok) {
+        console.error(body)
+        throw new Error(res.statusText)
+    }
+    return body
+}

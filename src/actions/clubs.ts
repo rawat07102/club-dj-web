@@ -1,9 +1,29 @@
 "use server"
 
-import { Club, Playlist, YTVideo } from "@/lib/types"
+import { Club } from "@/lib/types"
 import { apiRoute, extractAccessToken, getUserId } from "@/lib/utils"
 import { revalidateTag } from "next/cache"
 import { cookies } from "next/headers"
+
+type QueryParams = {
+    [key: string]: string | number
+}
+
+export async function getClubs(queryParams: QueryParams = {}): Promise<Club[]> {
+    let url = "/clubs?"
+    Object.keys(queryParams).forEach((key) => {
+        url = url + `${key}=${queryParams[key]}&`
+    })
+
+    const res = await fetch(apiRoute(url), {
+        next: {
+            tags: [url],
+            revalidate: 2000
+        },
+    })
+    const clubs = await res.json()
+    return clubs
+}
 
 export async function createClub() {
     const res = await fetch(apiRoute("/clubs"), {
@@ -24,6 +44,62 @@ export async function createClub() {
     return clubId
 }
 
+export default async function updateClubDetails(formData: FormData) {
+    const clubId = formData.get("clubId")
+
+    if (!clubId) {
+        throw new Error("Club Id is required as formData field.")
+    }
+
+    const name = formData.get("name")
+    const description = formData.get("description")
+    const genres = formData.getAll("genres")
+
+    const body: Record<string, any> = {}
+    if (name) {
+        body["name"] = name
+    }
+    if (description) {
+        body["description"] = description
+    }
+    if (genres.length > 0) {
+        body["genreIds"] = genres
+    }
+
+    const res = await fetch(apiRoute(`/clubs/${clubId}`), {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: extractAccessToken(await cookies()),
+        },
+        body: JSON.stringify(body),
+    })
+
+    if (!res.ok) {
+        console.error(await res.json())
+        throw new Error(res.statusText)
+    }
+
+    if (formData.has("thumbnail")) {
+        await uploadClubThumbnail(clubId.toString(), formData)
+    }
+    revalidateTag(`/clubs/${clubId}`)
+    return clubId
+}
+
+export async function uploadClubThumbnail(
+    clubId: Club["id"],
+    formData: FormData
+) {
+    await fetch(apiRoute(`/clubs/${clubId}/thumbnail`), {
+        method: "PUT",
+        headers: {
+            Authorization: extractAccessToken(await cookies()),
+        },
+        body: formData,
+    })
+}
+
 export async function fetchClubById(clubId: string): Promise<Club> {
     const res = await fetch(apiRoute(`/clubs/${clubId}`), {
         next: {
@@ -38,61 +114,6 @@ export async function fetchClubById(clubId: string): Promise<Club> {
     return body
 }
 
-export async function fetchPlaylistById(playlistId: string): Promise<Playlist> {
-    const res = await fetch(apiRoute(`/playlists/${playlistId}`), {
-        next: {
-            tags: [`/playlists/${playlistId}`],
-        },
-    })
-    const body = await res.json()
-    if (!res.ok) {
-        console.error(body)
-        throw new Error(res.statusText)
-    }
-    return body
-}
-
-export async function isClubCreator(creatorId: string) {
-    const userId = getUserId(await cookies())
-    return userId == creatorId
-}
-
-export async function getVideoById(id: string): Promise<YTVideo> {
-    const res = await fetch(apiRoute(`/youtube/videos/${id}`), {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-        },
-    })
-    const body = await res.json()
-    if (!res.ok) {
-        console.error(body)
-        throw "Error while fetching: getVideoById"
-    }
-
-    return body.items[0].snippet
-}
-
-export async function addVideoToQueue(clubId: number, formData: FormData) {
-    const videoId = formData.get("videoId")
-    const res = await fetch(apiRoute(`/clubs/${clubId}/queue`), {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: extractAccessToken(await cookies()),
-        },
-        body: JSON.stringify({
-            videoId,
-        }),
-    })
-
-    if (!res.ok) {
-        console.log(await res.json())
-        throw new Error(res.statusText)
-    }
-    revalidateTag(`/clubs/${clubId}`)
-}
-
 export async function deleteClub(clubId: string) {
     await fetch(apiRoute(`/clubs/${clubId}`), {
         method: "DELETE",
@@ -102,4 +123,9 @@ export async function deleteClub(clubId: string) {
         },
     })
     revalidateTag("/clubs")
+}
+
+export async function isClubCreator(creatorId: string) {
+    const userId = getUserId(await cookies())
+    return userId == creatorId
 }

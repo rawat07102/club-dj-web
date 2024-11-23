@@ -1,8 +1,8 @@
 import React from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Bell, Search, ChevronDown } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Search, ChevronDown } from "lucide-react"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -11,21 +11,17 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip"
 import ClubCard from "@/components/shared/ClubCard"
 import GridLayout from "@/components/shared/GridLayout"
 import { LogoutButton } from "@/components/dashboard/LogoutButton"
-import { getClubs } from "@/actions/dashboard"
+import { getClubs } from "@/actions/clubs"
 import Link from "next/link"
 import AppSidebar from "@/components/shared/app-sidebar/app-sidebar"
+import { getUser } from "@/actions/auth"
 
 export default async function HomePage() {
     const clubs = await getClubs()
+    const user = await getUser()
     return (
         <main className="flex gap-4 w-full">
             <AppSidebar />
@@ -48,18 +44,6 @@ export default async function HomePage() {
                             </Button>
                         </div>
                         <div className="flex items-center space-x-4">
-                            <TooltipProvider>
-                                <Tooltip>
-                                    <TooltipTrigger asChild>
-                                        <Button variant="outline" size="icon">
-                                            <Bell className="h-5 w-5" />
-                                        </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent>
-                                        <p>Notifications</p>
-                                    </TooltipContent>
-                                </Tooltip>
-                            </TooltipProvider>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button
@@ -67,13 +51,13 @@ export default async function HomePage() {
                                         className="flex items-center space-x-2"
                                     >
                                         <Avatar className="h-8 w-8">
-                                            {/*<AvatarImage
-                                            src="/placeholder-avatar.jpg"
-                                            alt="User"
-                                        />*/}
+                                            <AvatarImage
+                                                src={user.profilePic}
+                                                alt="User profile pic"
+                                            />
                                             <AvatarFallback>U</AvatarFallback>
                                         </Avatar>
-                                        <span>User</span>
+                                        <span>{user.username}</span>
                                         <ChevronDown className="h-4 w-4" />
                                     </Button>
                                 </DropdownMenuTrigger>
@@ -82,9 +66,8 @@ export default async function HomePage() {
                                         My Account
                                     </DropdownMenuLabel>
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem>Profile</DropdownMenuItem>
                                     <DropdownMenuItem>
-                                        Settings
+                                        <Link href="/profile">Profile</Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuSeparator />
                                     <LogoutButton />

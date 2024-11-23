@@ -1,5 +1,5 @@
 "use client"
-import { getVideoById } from "@/actions/clubs"
+import { getVideoById } from "@/actions/youtube"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
 import useSWR from "swr"
