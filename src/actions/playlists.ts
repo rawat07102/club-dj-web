@@ -1,6 +1,6 @@
 "use server"
 import { Club, Playlist } from "@/lib/types"
-import { apiRoute, extractAccessToken } from "@/lib/utils"
+import { apiRoute, extractAccessToken, getUserId } from "@/lib/utils"
 import { revalidatePath, revalidateTag } from "next/cache"
 import { cookies } from "next/headers"
 
@@ -43,13 +43,55 @@ export async function uploadPlaylistThumbnail(
     playlistId: Playlist["id"],
     formData: FormData
 ) {
-    await fetch(apiRoute(`/playlists/${playlistId}/thumbnail`), {
+    const res = await fetch(apiRoute(`/playlists/${playlistId}/thumbnail`), {
         method: "PUT",
         headers: {
             Authorization: extractAccessToken(await cookies()),
         },
         body: formData,
     })
+    if (!res.ok) {
+        console.error(await res.json())
+        throw new Error(res.statusText)
+    }
+}
+
+export async function updatePlaylistDetails(formData: FormData) {
+    const playlistId = formData.get("playlistId")
+
+    if (!playlistId) {
+        throw new Error("Playlist Id is required as formData field.")
+    }
+
+    const name = formData.get("name")
+    const description = formData.get("description")
+
+    const body: Record<string, any> = {}
+    if (name) {
+        body["name"] = name
+    }
+    if (description) {
+        body["description"] = description
+    }
+    const res = await fetch(apiRoute(`/playlists/${playlistId}`), {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: extractAccessToken(await cookies()),
+        },
+        body: JSON.stringify(body),
+    })
+
+    if (!res.ok) {
+        console.error(await res.json())
+        throw new Error(res.statusText)
+    }
+
+    if (formData.has("thumbnail")) {
+        await uploadPlaylistThumbnail(playlistId.toString(), formData)
+    }
+    revalidateTag(`/playlists/${playlistId}`)
+    return playlistId
 }
 
 export async function addVideoToPlaylist(
@@ -99,7 +141,7 @@ export async function removeVideoFromPlaylist(
     revalidateTag(`/playlists/${playlistId}`)
 }
 
-export async function fetchPlaylistById(playlistId: string): Promise<Playlist> {
+export async function getPlaylistById(playlistId: string): Promise<Playlist> {
     const res = await fetch(apiRoute(`/playlists/${playlistId}`), {
         next: {
             tags: [`/playlists/${playlistId}`],
@@ -111,4 +153,9 @@ export async function fetchPlaylistById(playlistId: string): Promise<Playlist> {
         throw new Error(res.statusText)
     }
     return body
+}
+
+export async function isPlaylistCreator(creatorId: string) {
+    const userId = getUserId(await cookies())
+    return userId == creatorId
 }

@@ -83,7 +83,6 @@ export default function ClubHeader({ club, className, ...restProps }: Props) {
                     </div>
                 </div>
             </div>
-            <div className="flex flex-col gap-2"></div>
         </div>
     )
 }

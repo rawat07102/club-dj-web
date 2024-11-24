@@ -55,7 +55,7 @@ export interface Club extends BaseEntity {
     thumbnail?: string
     currentDJ: User
     djWishlist: User[]
-    creatorId: string
+    creatorId: BaseEntity["id"]
     creator: User
     followers: User[]
     followersCount: number
@@ -68,6 +68,7 @@ export interface Playlist extends BaseEntity {
     description: string
     likeCount: number
     creator: User
+    creatorId: BaseEntity["id"]
     club: Club
     thumbnail?: string
 }
