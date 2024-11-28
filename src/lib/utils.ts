@@ -75,7 +75,7 @@ export function isArrayEqual<T>(
     return true
 }
 
-export function daysSince(date: Date) {
+export function daysSince(date: string) {
     return Math.floor(
         (new Date().getTime() - new Date(date).getTime()) / (1000 * 3600 * 24)
     )

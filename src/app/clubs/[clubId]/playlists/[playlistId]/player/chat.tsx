@@ -1,6 +1,6 @@
 "use client"
 
-import { getAuthToken } from "@/actions/auth"
+import { getAuthToken } from "@/actions/user"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"

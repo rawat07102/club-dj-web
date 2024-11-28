@@ -14,6 +14,8 @@ export interface Player {
     playVideo(): void
     getVideoUrl(): void
     getPlaylistIndex(): void
+    getDuration(): number
+    seekTo(seconds: number, allowSeekAhead: boolean): void
 }
 
 export interface LoadPlaylistOptions {
@@ -39,8 +41,8 @@ export interface PlayerParameters {
 }
 
 export interface PlayerEvents {
-    onReady(): void
-    onStateChange(state: { data: YT_PLAYER_STATE | -1; X: Player }): void
+    onReady?: () => void
+    onStateChange?: (state: { data: YT_PLAYER_STATE | -1; X: Player }) => void
 }
 
 export enum YT_PLAYER_STATE {

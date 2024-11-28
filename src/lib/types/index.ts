@@ -24,8 +24,8 @@ export interface YTVideo {
 
 interface BaseEntity {
     id: string
-    created: Date
-    updated: Date
+    created: string
+    updated: string
 }
 
 export interface User extends BaseEntity {
@@ -50,7 +50,7 @@ export interface Genre extends BaseEntity {
 export interface Club extends BaseEntity {
     name: string
     description: string
-    queue: string[]
+    queue: string[] | null
     genres: Genre[]
     thumbnail?: string
     currentDJ: User
@@ -60,11 +60,16 @@ export interface Club extends BaseEntity {
     followers: User[]
     followersCount: number
     playlists: Playlist[]
+    timeBeforeNextQueue: number
+    currentVideo: string | null
+    currentVideoStartTime: string | null
+    voteSkipCount: number
+    votes: string[] | null
 }
 
 export interface Playlist extends BaseEntity {
     name: string
-    list?: string[]
+    list: string[] | null
     description: string
     likeCount: number
     creator: User

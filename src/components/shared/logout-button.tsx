@@ -1,10 +1,10 @@
 "use client"
 
-import { logout } from "@/actions/auth"
+import { logout } from "@/actions/user"
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { LogOut } from "lucide-react"
 
-export function LogoutButton() {
+export default function LogoutButton() {
     return (
         <DropdownMenuItem onClick={() => logout()}>
             <LogOut className="h-4 w-4 mr-2" />

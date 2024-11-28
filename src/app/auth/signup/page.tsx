@@ -1,4 +1,4 @@
-import { signup } from "@/actions/auth"
+import { signup } from "@/actions/user"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"

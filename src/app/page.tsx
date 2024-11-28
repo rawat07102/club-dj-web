@@ -13,11 +13,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 import ClubCard from "@/components/shared/ClubCard"
 import GridLayout from "@/components/shared/GridLayout"
-import { LogoutButton } from "@/components/dashboard/LogoutButton"
+import LogoutButton from "@/components/shared/logout-button"
 import { getClubs } from "@/actions/clubs"
 import Link from "next/link"
 import AppSidebar from "@/components/shared/app-sidebar/app-sidebar"
-import { getUser } from "@/actions/auth"
+import { getUser } from "@/actions/user"
 
 export default async function HomePage() {
     const clubs = await getClubs()

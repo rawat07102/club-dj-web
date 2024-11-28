@@ -1,5 +1,5 @@
 "use client"
-import { fetchPlaylistById } from "@/actions/playlists"
+import { getPlaylistById } from "@/actions/playlists"
 import IframePlayer from "./i-frame-player"
 import { redirect } from "next/navigation"
 import Chat from "./chat"
@@ -26,7 +26,7 @@ export default function PlaylistPlayer(props: Props) {
         data: playlist,
         isLoading,
         error,
-    } = useSWR(playlistId, fetchPlaylistById)
+    } = useSWR(playlistId, getPlaylistById)
     const startingVideo =
         searchParams.startingVideo ||
         (playlist && playlist.list ? playlist.list[0] : "")

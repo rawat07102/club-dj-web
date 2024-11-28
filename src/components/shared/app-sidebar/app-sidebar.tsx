@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/sidebar"
 import AppSidebarTrigger from "./app-sidebar-trigger"
 import Link from "next/link"
-import { getUser } from "@/actions/auth"
+import { getUser } from "@/actions/user"
 import CreateClub from "../create-club"
 import DeleteClub from "@/app/clubs/[clubId]/delete-club"
 

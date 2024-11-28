@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { getUser } from "@/actions/auth"
+import { getUser } from "@/actions/user"
 import { Separator } from "@/components/ui/separator"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"

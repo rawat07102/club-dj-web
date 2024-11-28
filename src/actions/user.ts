@@ -1,6 +1,6 @@
 "use server"
 import { cookies } from "next/headers"
-import { apiRoute, getUserId } from "@/lib/utils"
+import { apiRoute, extractAccessToken, getUserId } from "@/lib/utils"
 import { redirect } from "next/navigation"
 import { User } from "@/lib/types"
 
@@ -91,4 +91,44 @@ export async function getUser(id?: string): Promise<User> {
 
     const user = await res.json()
     return user
+}
+
+export async function updateMyDetails(formData: FormData) {
+    const bio = formData.get("bio")
+    const body: Record<string, any> = {}
+    if (bio) {
+        body["bio"] = bio
+    }
+    const res = await fetch(apiRoute(`/users/me`), {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: extractAccessToken(await cookies()),
+        },
+        body: JSON.stringify(body),
+    })
+
+    if (!res.ok) {
+        console.error(await res.json())
+        throw new Error(res.statusText)
+    }
+
+    if (formData.has("profilePic")) {
+        await changeMyProfilePic(formData)
+    }
+}
+
+export async function changeMyProfilePic(formData: FormData) {
+    const res = await fetch(apiRoute(`/users/me/profile-pic`), {
+        method: "PUT",
+        headers: {
+            Authorization: extractAccessToken(await cookies()),
+        },
+        body: formData,
+    })
+    if (!res.ok) {
+        console.error(await res.json())
+        throw new Error(res.statusText)
+    }
+
 }

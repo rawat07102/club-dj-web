@@ -18,7 +18,7 @@ export async function getClubs(queryParams: QueryParams = {}): Promise<Club[]> {
     const res = await fetch(apiRoute(url), {
         next: {
             tags: [url],
-            revalidate: 2000
+            revalidate: 2000,
         },
     })
     const clubs = await res.json()
@@ -128,4 +128,39 @@ export async function deleteClub(clubId: string) {
 export async function isClubCreator(creatorId: string) {
     const userId = getUserId(await cookies())
     return userId == creatorId
+}
+
+export async function voteSkip(clubId: Club["id"]) {
+    const res = await fetch(apiRoute(`/clubs/${clubId}/voteSkipCount`), {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: extractAccessToken(await cookies()),
+        },
+    })
+    if (!res.ok) {
+        console.error(await res.json())
+        throw new Error(res.statusText)
+    }
+}
+
+export async function addVideoToQueue(
+    clubId: Club["id"],
+    videoId: string
+): Promise<Club> {
+    const res = await fetch(apiRoute(`/clubs/${clubId}/queue`), {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: extractAccessToken(await cookies()),
+        },
+        body: JSON.stringify({
+            videoId,
+        }),
+    })
+    if (!res.ok) {
+        console.error(await res.json())
+        throw new Error(res.statusText)
+    }
+    return res.json()
 }
