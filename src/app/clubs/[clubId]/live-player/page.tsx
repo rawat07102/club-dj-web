@@ -1,17 +1,19 @@
 "use client"
-import { addVideoToQueue, fetchClubById, voteSkip } from "@/actions/clubs"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { fetchClubById, voteSkip } from "@/actions/clubs"
 import { getAuthToken } from "@/actions/user"
-import { Button } from "@/components/ui/button"
+import Queue from "../playlists/[playlistId]/player/queue"
 import { Club } from "@/lib/types"
 import { socket } from "@/lib/utils"
 import React from "react"
 import useSWR from "swr"
-import { Input } from "@/components/ui/input"
-import { Label } from "@radix-ui/react-dropdown-menu"
 import Script from "next/script"
 import { PlayerEvents, YT_PLAYER_STATE } from "@/lib/types/ytIframe.types"
-import QueueCard from "../playlists/[playlistId]/player/queue-card"
-import AddVideo from "../playlists/[playlistId]/add-video"
+import { Button } from "@/components/ui/button"
+import AddVideoDialog from "./add-video-dialog"
+import Chat, { Message } from "./chat"
+import { Input } from "@/components/ui/input"
+import { Send } from "lucide-react"
 
 type Props = {
     params: Promise<{
@@ -36,10 +38,11 @@ interface PlayerPayload {
 
 export default function Test(props: Props) {
     const { clubId } = React.use(props.params)
+    const [messages, setMessages] = React.useState<Message[]>([])
+    const [message, setMessage] = React.useState<string>("")
 
     const [playerPayload, setPlayerPayload] =
         React.useState<PlayerPayload | null>(null)
-    const [addVideoId, setAddVideoId] = React.useState("")
     const {
         data: club,
         isLoading,
@@ -47,6 +50,7 @@ export default function Test(props: Props) {
     } = useSWR(clubId, fetchClubById, {
         refreshInterval: 1000 * 60,
     })
+
     React.useEffect(() => {
         async function socketConnection() {
             const accessToken = await getAuthToken()
@@ -67,6 +71,7 @@ export default function Test(props: Props) {
                 setPlayerPayload(payload)
             })
         })
+
         socket.on("play-next", (data: PlayerPayload) => {
             setPlayerPayload(data)
             if (data.currentVideo) {
@@ -76,10 +81,22 @@ export default function Test(props: Props) {
 
         return () => {
             socket.emit("leave-room", clubId)
-            socket.off("new-message")
             socket.disconnect()
         }
     }, [])
+
+    React.useEffect(() => {
+        socket.on("new-message", onNewMessage)
+        return () => {
+            socket.off("new-message")
+        }
+    }, [socket, messages])
+
+    function onNewMessage(newMessage: any) {
+        console.log(messages)
+        setMessages([...messages, newMessage])
+    }
+
     const startTime = React.useMemo(() => {
         if (!playerPayload?.currentVideoStartTime) {
             return 0
@@ -155,24 +172,69 @@ export default function Test(props: Props) {
                     </>
                 )}
                 {!playerPayload?.currentVideo && (
-                    <div className="h-full w-full flex justify-center items-center">
+                    <div className="h-full bg-primary/10 w-full flex justify-center items-center">
                         <span>No Current Video.</span>
                     </div>
                 )}
             </div>
-            <div className="flex flex-col bg-secondary w-full max-w-sm">
-                <div className="flex justify-between">
-                    <Button onClick={() => voteSkip(clubId)}>
-                        Vote Skip {playerPayload && playerPayload.voteSkipCount}
-                    </Button>
-                </div>
-                {club && playerPayload && (
-                    <div className="flex flex-col gap-2">
-                        {club.queue?.map((id) => (
-                            <QueueCard key={id} videoId={id} />
-                        ))}
-                    </div>
-                )}
+            <div className="relative w-full max-w-sm">
+                <Tabs defaultValue="chat" className="relative">
+                    <TabsList className="flex gap-2 absolute w-full z-50">
+                        <TabsTrigger value="chat" className="flex-1">
+                            Chat
+                        </TabsTrigger>
+                        <TabsTrigger value="queue" className="flex-1">
+                            Queue
+                        </TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="chat" className="mt-0">
+                        <div className="relative flex flex-col justify-end w-full h-screen ">
+                            <Chat messages={messages} />
+                            <form className="flex z-50 space-x-2 w-[90%] mx-auto pb-2">
+                                <Input
+                                    placeholder="Type your message..."
+                                    className="flex-grow"
+                                    onChange={(e) => setMessage(e.target.value)}
+                                    value={message}
+                                />
+                                <Button
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        socket.emit("message", {
+                                            clubId,
+                                            message,
+                                        })
+                                        setMessage("")
+                                    }}
+                                    disabled={!message}
+                                >
+                                    <Send size="20px" />
+                                </Button>
+                            </form>
+                        </div>
+                    </TabsContent>
+                    <TabsContent value="queue" className="mt-0">
+                        <Queue
+                            videoId={playerPayload?.currentVideo || ""}
+                            queue={club.queue}
+                            onNewVideo={() => {}}
+                        />
+                        <div className="absolute bottom-4 right-4 flex items-center gap-4">
+                            <Button
+                                onClick={() => voteSkip(clubId)}
+                                className="flex gap-1"
+                            >
+                                <span>Vote Skip</span>
+                                {playerPayload && (
+                                    <span className="ml-1">
+                                        {playerPayload.voteSkipCount}
+                                    </span>
+                                )}
+                            </Button>
+                            <AddVideoDialog clubId={clubId} />
+                        </div>
+                    </TabsContent>
+                </Tabs>
             </div>
         </div>
     )

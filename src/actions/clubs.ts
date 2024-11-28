@@ -145,9 +145,13 @@ export async function voteSkip(clubId: Club["id"]) {
 }
 
 export async function addVideoToQueue(
-    clubId: Club["id"],
-    videoId: string
+    clubId: string,
+    formData: FormData
 ): Promise<Club> {
+    const videoId = formData.get("videoId")
+    if (!videoId) {
+        throw new Error("Video Id cannot be empty.")
+    }
     const res = await fetch(apiRoute(`/clubs/${clubId}/queue`), {
         method: "PUT",
         headers: {

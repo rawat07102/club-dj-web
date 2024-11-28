@@ -57,14 +57,19 @@ export default function Chat({ clubId }: Props) {
                 console.log(message)
             })
         })
-        socket.on("new-message", onNewMessage)
 
         return () => {
             socket.emit("leave-room", clubId)
-            socket.off("new-message")
             socket.disconnect()
         }
-    }, [chatMessages])
+    }, [])
+
+    React.useEffect(() => {
+        socket.on("new-message", onNewMessage)
+        return () => {
+            socket.off("new-message")
+        }
+    }, [socket, chatMessages])
 
     return (
         <div className="relative flex flex-col justify-end w-full h-screen ">
