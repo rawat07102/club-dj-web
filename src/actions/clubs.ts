@@ -21,6 +21,11 @@ export async function getClubs(queryParams: QueryParams = {}): Promise<Club[]> {
             revalidate: 2000,
         },
     })
+    if (!res.ok) {
+        console.error(await (res.json()))
+        throw new Error(res.statusText)
+
+    }
     const clubs = await res.json()
     return clubs
 }
