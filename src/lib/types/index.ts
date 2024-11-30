@@ -31,16 +31,10 @@ interface BaseEntity {
 export interface User extends BaseEntity {
     username: string
     bio: string
-    email: string
     profilePic?: string
     password: string
-    stars: number
-    friends: User[]
     playlists: Playlist[]
-    sharedPlaylists: Playlist[]
     clubs: Club[]
-    wishlistJoined: Club
-    clubsFollowed: Club[]
 }
 
 export interface Genre extends BaseEntity {
@@ -53,12 +47,8 @@ export interface Club extends BaseEntity {
     queue: string[] | null
     genres: Genre[]
     thumbnail?: string
-    currentDJ: User
-    djWishlist: User[]
     creatorId: BaseEntity["id"]
     creator: User
-    followers: User[]
-    followersCount: number
     playlists: Playlist[]
     timeBeforeNextQueue: number
     currentVideo: string | null
@@ -71,15 +61,8 @@ export interface Playlist extends BaseEntity {
     name: string
     list: string[] | null
     description: string
-    likeCount: number
     creator: User
     creatorId: BaseEntity["id"]
     club: Club
     thumbnail?: string
-}
-
-export interface FriendRequest extends BaseEntity {
-    from: User
-    to: User
-    isPending: boolean
 }

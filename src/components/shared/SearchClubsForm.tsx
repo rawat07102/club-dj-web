@@ -2,7 +2,7 @@
 import { Button } from "../ui/button"
 import Image from "next/image"
 import { Input } from "../ui/input"
-import { SearchIcon, Users } from "lucide-react"
+import { SearchIcon } from "lucide-react"
 import React from "react"
 import { Popover, PopoverContent } from "../ui/popover"
 import { Anchor } from "@radix-ui/react-popover"
@@ -50,7 +50,7 @@ export default function SearchClubsForm({}: Props) {
     return (
         <form
             onSubmit={handleSubmit}
-            className="flex relative flex-col justify-stretch w-full gap-1"
+            className="flex relative flex-col justify-stretch max-w-sm w-full gap-1"
         >
             <div className="flex w-full flex-wrap gap-2">
                 <Input
@@ -103,10 +103,6 @@ export default function SearchClubsForm({}: Props) {
                                     <div className="flex flex-col gap-1 flex-1">
                                         <span className="font-semibold w-full">
                                             {club.name}
-                                        </span>
-                                        <span className="flex items-center gap-1 text-opacity-90 text-xs">
-                                            <Users size={12} />
-                                            {club.followersCount}
                                         </span>
                                     </div>
                                 </Link>

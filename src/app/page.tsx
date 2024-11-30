@@ -18,6 +18,7 @@ import { getClubs } from "@/actions/clubs"
 import Link from "next/link"
 import AppSidebar from "@/components/shared/app-sidebar/app-sidebar"
 import { getUser } from "@/actions/user"
+import SearchClubsForm from "@/components/shared/SearchClubsForm"
 
 export default async function HomePage() {
     const clubs = await getClubs()
@@ -29,20 +30,7 @@ export default async function HomePage() {
                 {/* Top Bar */}
                 <header className="bg-white shadow-sm">
                     <div className="flex items-center justify-between p-4">
-                        <div className="flex items-center w-1/3">
-                            <Input
-                                type="search"
-                                placeholder="Search clubs or tracks"
-                                className="w-full"
-                            />
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="ml-2"
-                            >
-                                <Search className="h-5 w-5" />
-                            </Button>
-                        </div>
+                        <SearchClubsForm />
                         <div className="flex items-center space-x-4">
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>

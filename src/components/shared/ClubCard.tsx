@@ -1,6 +1,5 @@
 import { Club } from "@/lib/types"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
-import { Users } from "lucide-react"
 import Image from "next/image"
 
 type Props = {
@@ -32,10 +31,6 @@ export default function ClubCard({ club }: Props) {
                     <CardTitle className="text-base truncate flex-1">
                         {club.name}
                     </CardTitle>
-                    <div className="flex items-center space-x-2 text-sm text-gray-500">
-                        <Users size={18} />
-                        <span>{club.followersCount}</span>
-                    </div>
                 </div>
             </CardContent>
         </Card>

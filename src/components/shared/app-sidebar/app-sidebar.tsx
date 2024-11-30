@@ -93,9 +93,6 @@ export default async function AppSidebar() {
                                         <p className="font-medium text">
                                             {club.name}
                                         </p>
-                                        <p className="text-xs text-gray-500">
-                                            {`${club.followersCount} followers`}
-                                        </p>
                                     </div>
                                 </Link>
                                 <div className="flex ml-auto items-center">
