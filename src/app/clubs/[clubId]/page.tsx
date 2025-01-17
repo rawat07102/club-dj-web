@@ -113,5 +113,9 @@ export default async function ClubPage(props: Props) {
 }
 
 function getUrl(clubId: string, playlistId: string, list?: string[] | null) {
-    return `${clubId}/playlists/${playlistId}/${list ? list[0] : "empty-list"}`
+    const url = `${clubId}/playlists/${playlistId}/player`
+    if (list && list.length > 0) {
+        return url + `?startingVideo=${list[0]}`
+    }
+    return url
 }
